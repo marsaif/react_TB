@@ -100,14 +100,15 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
-    const register = async (email, username, password) => {
-        const response = await axios.post('/api/auth/register', {
+    const register = async (email, firstName, password) => {
+        const response = await axios.post('http://localhost:3001/users', {
             email,
-            username,
+            firstName,
             password,
         })
 
         const { accessToken, user } = response.data
+        console.log(accessToken+""+user)
 
         setSession(accessToken)
 
