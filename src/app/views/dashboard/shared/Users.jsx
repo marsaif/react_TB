@@ -1,5 +1,11 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import { TextField } from '@mui/material';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -20,30 +26,56 @@ const columns = [
     valueGetter: (params) =>
       `${params.row.firstName || ''} ${params.row.lastName || ''}`,
   },
+  {
+    field: 'email',
+    headerName: 'Email',
+    sortable: false,
+    width: 160,
+  },
 ];
 
 const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35, email: "test@gmail.com" },
+  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42, email: "test@gmail.com" },
+  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45, email: "test@gmail.com" },
+  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16, email: "test@gmail.com" },
+  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: 20, email: "test@gmail.com" },
+
 ];
 
 export default function Users() {
+  const [role, setRole] = React.useState('');
+
+  const handleChange = (event) => {
+    setRole(event.target.value);
+  };
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        checkboxSelection
-      />
-    </div>
+    <>
+      <TextField id="filled-basic" label="Search" variant="outlined" sx={{ m: 5 }} style={{ width: '80%', textAlign: "center" }} placeholder='Search' />
+      <FormControl sx={{ my: 5 }} style={{ width: '10%' }}>
+        <InputLabel id="demo-simple-select-label">role</InputLabel>
+        <Select 
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={role}
+          label="Age"
+          onChange={handleChange}
+        >
+          <MenuItem value={10}>Admin</MenuItem>
+          <MenuItem value={20}>Patient</MenuItem>
+          <MenuItem value={30}>Doctor</MenuItem>
+        </Select>
+      </FormControl>
+      <div style={{ height: 400, width: '99%' }} >
+        <DataGrid
+          sx={{ mx: 4 }}
+          rows={rows}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          checkboxSelection
+        />
+      </div>
+    </>
   );
 }

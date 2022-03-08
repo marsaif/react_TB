@@ -45,7 +45,7 @@ const StatCards = () => {
                     <ContentBox>
                         <Icon className="icon">group</Icon>
                         <Box ml="12px">
-                            <Small>New Leads</Small>
+                            <Small>All Users</Small>
                             <Heading>3050</Heading>
                         </Box>
                     </ContentBox>
@@ -62,7 +62,7 @@ const StatCards = () => {
                         <Icon className="icon">attach_money</Icon>
                         <Box ml="12px">
                             <Small sx={{ lineHeight: 1 }}>
-                                This week Sales
+                                This week Revenues
                             </Small>
                             <Heading>$80,500</Heading>
                         </Box>
@@ -74,38 +74,7 @@ const StatCards = () => {
                     </Tooltip>
                 </StyledCard>
             </Grid>
-            <Grid item xs={12} md={6}>
-                <StyledCard elevation={6}>
-                    <ContentBox>
-                        <Icon className="icon">store</Icon>
-                        <Box ml="12px">
-                            <Small>Inventory Status</Small>
-                            <Heading>8.5% Stock Surplus</Heading>
-                        </Box>
-                    </ContentBox>
-                    <Tooltip title="View Details" placement="top">
-                        <IconButton>
-                            <Icon>arrow_right_alt</Icon>
-                        </IconButton>
-                    </Tooltip>
-                </StyledCard>
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <StyledCard elevation={6}>
-                    <ContentBox>
-                        <Icon className="icon">shopping_cart</Icon>
-                        <Box ml="12px">
-                            <Small>Orders to deliver</Small>
-                            <Heading>305 Orders</Heading>
-                        </Box>
-                    </ContentBox>
-                    <Tooltip title="View Details" placement="top">
-                        <IconButton>
-                            <Icon>arrow_right_alt</Icon>
-                        </IconButton>
-                    </Tooltip>
-                </StyledCard>
-            </Grid>
+
         </Grid>
     )
 }

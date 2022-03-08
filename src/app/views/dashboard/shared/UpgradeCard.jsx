@@ -40,7 +40,7 @@ const UpgradeCard = () => {
                     alt="upgrade"
                 />
                 <Paragraph>
-                    Upgrade to <b>MatX PRO</b> for <br /> more resources
+                    Upgrade to <b>Prenium</b> for <br /> for more services
                 </Paragraph>
                 <Button
                     size="large"

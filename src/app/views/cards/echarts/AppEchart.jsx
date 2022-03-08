@@ -24,37 +24,29 @@ const AppEchart = () => {
     const theme = useTheme()
     return (
         <Container>
-            <div className="breadcrumb">
-                <Breadcrumb
-                    routeSegments={[
-                        { name: 'Charts', path: '/charts' },
-                        { name: 'Echarts' },
-                    ]}
-                />
-            </div>
 
-            <SimpleCard title="Doughnut Chart">
+            <SimpleCard title="Roles Chart">
                 <DoughnutChart
                     height="350px"
                     color={[
-                        theme.palette.primary.dark,
-                        theme.palette.primary.main,
-                        theme.palette.primary.light,
+                        theme.palette.error.main,                        
+                        theme.palette.info.dark,
+                        theme.palette.success.main
                     ]}
                 />
             </SimpleCard>
             <Box sx={{ py: '12px' }} />
-            <SimpleCard title="Line Chart">
+            <SimpleCard title="Apointment Chart">
                 <LineChart
                     height="350px"
                     color={[
                         theme.palette.primary.main,
-                        theme.palette.primary.light,
+                        theme.palette.error.main    
                     ]}
                 />
             </SimpleCard>
             <Box sx={{ py: '12px' }} />
-            <SimpleCard title="Comparison Chart">
+            <SimpleCard title="Premium Users Chart">
                 <ComparisonChart
                     height="350px"
                     color={[
@@ -64,13 +56,7 @@ const AppEchart = () => {
                     ]}
                 />
             </SimpleCard>
-            <Box sx={{ py: '12px' }} />
-            <SimpleCard title="Area Chart">
-                <AreaChart
-                    height="350px"
-                    color={[theme.palette.primary.main]}
-                />
-            </SimpleCard>
+
         </Container>
     )
 }
