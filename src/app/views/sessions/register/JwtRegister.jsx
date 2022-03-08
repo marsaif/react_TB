@@ -49,14 +49,16 @@ const JwtRegister = () => {
 
     const handleFormSubmit = (event) => {
         try {
-            register(state.email, state.username, state.password)
+            console.log(state.email, state.firstName, state.password)
+
+            register(state.email, state.firstName, state.password)
             navigate('/')
         } catch (e) {
             console.log(e)
         }
     }
 
-    let { username, email, password, agreement } = state
+    let { firstName, email, password, agreement } = state
 
     return (
         <JWTRegister>
@@ -77,11 +79,11 @@ const JwtRegister = () => {
                                     sx={{ mb: 3, width: '100%' }}
                                     variant="outlined"
                                     size="small"
-                                    label="Username"
+                                    label="firstName"
                                     onChange={handleChange}
                                     type="text"
-                                    name="username"
-                                    value={username || ''}
+                                    name="firstName"
+                                    value={firstName || ''}
                                     validators={['required']}
                                     errorMessages={['this field is required']}
                                 />
