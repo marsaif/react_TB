@@ -7,6 +7,8 @@ import AppEchart from '../cards/echarts/AppEchart'
 const Analytics = Loadable(lazy(() => import('./Analytics')))
 const Users = Loadable(lazy(() => import('./shared/Users')))
 const Apointments = Loadable(lazy(() => import('./shared/Apointments')))
+const MedicalRecordForm = Loadable(lazy(() => import('./shared/MedicalRecordForm')))
+
 
 const dashboardRoutes = [
     {
@@ -25,6 +27,11 @@ const dashboardRoutes = [
     {
         path: '/apointments',
         element: <Apointments />,
+    }
+    ,
+    {
+        path: '/medicalrecord',
+        element: <MedicalRecordForm />,
     }
 ]
 
