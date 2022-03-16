@@ -9,10 +9,24 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Button from '@mui/material/Button';
 import ChipInput from 'material-ui-chip-input'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 export default function MedicalRecordForm() {
+
+  const { idpatient } = useParams();
+
+  const [patient, setpatient] = useState([])
+  useEffect(() => {
+    // Update the document title using the browser API
+    axios.get("http://localhost:3001/users/" + idpatient).then((res) => {
+
+      setpatient(res.data)
+
+    })
+  }, []);
+
   let lst = []
   const handleChange = (newValue) => {
     lst = newValue
@@ -26,10 +40,10 @@ export default function MedicalRecordForm() {
     lst
   });
   const [formData, setFormData] = useState({
-    description: meds,
+    medsList: meds,
     allergies: "",
-    CurrentMedicalConditions:"",
-    familyhistory:""
+    CurrentMedicalConditions: "",
+    familyhistory: ""
   });
   const [errors, setErrors] = useState({ visbile: false, message: "" });
   const onChange = (e) => {
@@ -39,14 +53,14 @@ export default function MedicalRecordForm() {
   const onSubmit = async (e) => {
     e.preventDefault();
     console.log(meds)
-    // formData.description = []
-    // formData.description.push(lst);
-    formData.description = meds
+    // formData.medsList = []
+    // formData.medsList.push(lst);
+    formData.medsList = meds
     console.log(formData);
 
     axios.post('http://localhost:3001/medicalrecord', {
-      data: formData
-
+      data: formData,
+      patient:patient
     })
       .then(function (response) {
         console.log(response);
@@ -58,7 +72,7 @@ export default function MedicalRecordForm() {
   };
 
 
-  const { title, description, price } = formData;
+  const { title, medsList, price } = formData;
 
   return (
     <Box
@@ -70,13 +84,13 @@ export default function MedicalRecordForm() {
       autoComplete="off"
     >
       <h1 style={{ width: '100%', textAlign: 'center' }}>Patient medical record</h1>
-
       <Grid container spacing={1} style={{ display: 'flex', justifyContent: 'center' }}>
         <Grid item >
 
           <TextField
             id="standard-required"
             label="Patient"
+            value={patient.firstName + " " + patient.lastName}
             variant="standard"
             onChange={(e) => onChange(e)}
 
@@ -85,7 +99,7 @@ export default function MedicalRecordForm() {
         <Grid item >
 
           <TextField
-
+            value={patient.birthDate}
             id="standard-required"
             label="Date of Birth"
             variant="standard"
@@ -105,6 +119,7 @@ export default function MedicalRecordForm() {
         <Grid item >
 
           <TextField
+            value={patient.Adress}
 
             id="standard-required"
             label="Address"
@@ -117,7 +132,7 @@ export default function MedicalRecordForm() {
         <Grid item>
 
           <TextField
-
+            value={patient.phone+""}
             id="standard-required"
             label="Phone"
             variant="standard"
@@ -132,8 +147,10 @@ export default function MedicalRecordForm() {
               aria-labelledby="demo-row-radio-buttons-group-label"
               name="row-radio-buttons-group"
             >
-              <FormControlLabel value="female" control={<Radio />} label="Female" />
-              <FormControlLabel value="male" control={<Radio />} label="Male" />
+              <FormControlLabel value="female" control={<Radio />} label="Female"               checked={patient.sex === "female"}
+ />
+              <FormControlLabel value="male" control={<Radio />} label="Male"               checked={patient.sex === "male"}
+ />
 
             </RadioGroup>
           </FormControl>
@@ -195,7 +212,7 @@ export default function MedicalRecordForm() {
 
           <ChipInput label="Current Medications "
             id="outlined-multiline-static"
-            name="description"
+            name="medsList"
 
             onChange={(chips) => handleChange(chips)}
           />

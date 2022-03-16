@@ -21,7 +21,7 @@ export const navigations = [
     },
     {
         name: 'Medical Record',
-        path: '/medicalrecord',
+        path: '/medicalrecord/:idpatient',
         icon: 'person',
     },
     {

@@ -30,7 +30,7 @@ const dashboardRoutes = [
     }
     ,
     {
-        path: '/medicalrecord',
+        path: '/medicalrecord/:idpatient',
         element: <MedicalRecordForm />,
     }
 ]
