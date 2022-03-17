@@ -20,6 +20,11 @@ export const navigations = [
         icon: 'person',
     },
     {
+        name: 'Medical Record',
+        path: '/medicalrecord/:idpatient',
+        icon: 'person',
+    },
+    {
         label: 'Auth',
         type: 'label',
     },
