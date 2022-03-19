@@ -1,4 +1,9 @@
 $blue: #74b9ff;
+.unstyled-button {
+  border: none;
+  padding: 0;
+  background: none;
+}
 
 body {
   background-color: #3498db;
@@ -64,6 +69,7 @@ body {
 }
 
 input {
+  padding-left: 10px;
   border: none;
   border-radius: 30px;
   width: 80%;
