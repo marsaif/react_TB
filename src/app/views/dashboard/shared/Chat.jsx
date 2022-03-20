@@ -11,11 +11,7 @@ socket.emit("join_room", "test");
 function Chat() {
     const [messageList, setMessageList] = useState([]); 
     const [currentMessage, setCurrentMessage] = useState("")
-    const [userId , setUserId] = useState("")
-
-    const changeUserId = (e) => {
-        setUserId(e.target.value) ; 
-    }
+    const [userTyping,setUserTyping] = useState(false)
 
     const saveMessage = (e) => {
         setCurrentMessage(e.target.value) ; 
@@ -31,7 +27,7 @@ function Chat() {
             const data = {
                 room : 'test',
                 message : currentMessage , 
-                id : userId ,
+                id : socket.id ,
                 time:
                 new Date(Date.now()).getHours() +
                 ":" +
@@ -48,7 +44,21 @@ function Chat() {
         socket.on("receive_message", (data) => {
           setMessageList((list) => [...list, data]);
         });
+
+        socket.on("receive_typing", (data) => {
+          setUserTyping(data.typing);
+        });
+
       }, [socket]);
+
+    useEffect(() => {
+      const data = {
+        id : socket.id ,
+        room : 'test',
+        typing : currentMessage != ""
+      }
+      socket.emit("user_typing" , data)
+    },[currentMessage])
 
     return (
         <div className="container">
@@ -148,8 +158,8 @@ function Chat() {
                             messageList.map((msg)=> {
                                 return(
                                 <div className="row no-gutters">
-                                <div className={"col-md-3 " + (msg.id== userId ? 'offset-md-9' : '')}>
-                                    <div className={"chat-bubble " + (msg.id== userId  ? 'chat-bubble--right' : 'chat-bubble--left')}>
+                                <div className={"col-md-3 " + (msg.id== socket.id ? 'offset-md-9' : '')}>
+                                    <div className={"chat-bubble " + (msg.id== socket.id  ? 'chat-bubble--right' : 'chat-bubble--left')}>
                                         {msg.message} <br/>         
                                     </div>
                                     <small style={{marginLeft : "20%"}}>{msg.time}</small>
@@ -158,6 +168,14 @@ function Chat() {
                             
                             })
                         }
+
+                        {userTyping ? <div className="row no-gutters">
+                                <div className="col-md-3">
+                                    <div className="chat-bubble chat-bubble--left">
+                                        ...      
+                                    </div>
+                                </div>
+                            </div> : ""}
 
                         <div className="row">
                             <div className="col-12">
@@ -172,7 +190,6 @@ function Chat() {
                                         event.key === "Enter" && sendData();
                                       }}
                                     />
-                                    <input type="text" onChange={changeUserId}/>
 
                                     <i className="material-icons ">mic</i>
                                     <button onClick={sendData}  className="unstyled-button"><i className="material-icons">send</i></button>  
