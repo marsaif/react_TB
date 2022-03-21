@@ -3,6 +3,7 @@ import Loadable from 'app/components/Loadable/Loadable'
 import { authRoles } from '../../auth/authRoles'
 import AppEchart from '../cards/echarts/AppEchart'
 import Chat from './shared/Chat'
+import VideoChat from './shared/VideoChat'
 
 
 const Analytics = Loadable(lazy(() => import('./Analytics')))
@@ -20,6 +21,11 @@ const dashboardRoutes = [
     {
         path: '/chat',
         element: <Chat />,
+        auth: authRoles.admin,
+    },
+    {
+        path: '/video-chat',
+        element: <VideoChat />,
         auth: authRoles.admin,
     },
     {
