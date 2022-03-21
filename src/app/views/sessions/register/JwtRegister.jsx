@@ -40,7 +40,7 @@ const JWTRegister = styled(JustifyBox)(() => ({
 
 const JwtRegister = () => {
     const navigate = useNavigate()
-    const [state, setState] = useState({role:"PATIENT"})
+    const [state, setState] = useState({role:"PATIENT",sex:"man"})
     const { register } = useAuth()
     const [message, setMessage] = useState('')
 
@@ -64,7 +64,7 @@ const JwtRegister = () => {
                 state.speciality=''
             }
             await register(state.email, state.firstName, state.password, state.confirm, state.phone, state.birthDate, state.adress, state.sex, state.role ,state.speciality)
-            navigate('/session/signin')
+            navigate('/check-email')
         } catch (e) {
             console.log(e)
             setMessage(e.message)
@@ -72,7 +72,7 @@ const JwtRegister = () => {
         }
     }
 
-    let { firstName, email, password, confirm, phone, birthDate, adress,role ,speciality} = state
+    let { firstName, email, password, confirm, phone, birthDate, adress,role ,sex,speciality} = state
 
     return (
         <JWTRegister>
@@ -213,6 +213,7 @@ const JwtRegister = () => {
                                     aria-labelledby="demo-row-radio-buttons-group-label"
                                     name="sex"
                                     onChange={handleChange}
+                                    value={sex}
                                 >
                                     <FormControlLabel value="woman" control={<Radio />} label="Woman" />
                                     <FormControlLabel value="man" control={<Radio />} label="Man" />
