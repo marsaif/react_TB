@@ -1,9 +1,14 @@
+import {
+    Card,
+    Grid,
+    Button,
+    CircularProgress,
+} from '@mui/material'
 import React, { useState } from 'react'
-import { Box,  styled, useTheme } from '@mui/system'
-import { useNavigate } from 'react-router-dom'
-import { Paragraph, Span } from 'app/components/Typography'
-import { Card, Grid, Button } from '@mui/material'
+import { useNavigate, useParams } from 'react-router-dom'
+import { Box, styled, useTheme } from '@mui/system'
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
+import { Paragraph, } from 'app/components/Typography'
 import axios from 'axios'
 
 const FlexBox = styled(Box)(() => ({
@@ -26,9 +31,9 @@ const IMG = styled('img')(() => ({
     width: '100%',
 }))
 
-const ForgotPasswordRoot = styled(JustifyBox)(() => ({
+const JWTRoot = styled(JustifyBox)(() => ({
     background: '#1A2038',
-    minHeight: '100vh !important',
+    minHeight: '100% !important',
     '& .card': {
         maxWidth: 800,
         borderRadius: 12,
@@ -36,37 +41,58 @@ const ForgotPasswordRoot = styled(JustifyBox)(() => ({
     },
 }))
 
-const ForgotPassword = () => {
-    const navigate = useNavigate()
-    const [state, setState] = useState({})
-    const [message, setMessage] = useState('')
-    const { palette } = useTheme()
 
+
+const ChangePassword = () => {
+    const navigate = useNavigate()
+    const [userInfo, setUserInfo] = useState({
+        password: '',
+        confirmPassword: '',
+    })
+    const [message, setMessage] = useState('')
+    const [id, setId] = useState('')
+
+    const { restpassword } = useParams()
+
+    const handleChange = ({ target: { name, value } }) => {
+        let temp = { ...userInfo }
+        temp[name] = value
+        setUserInfo(temp)
+    }
+
+    const { palette } = useTheme()
     const textError = palette.error.main
 
 
-    const handleChange = ({ target: { name, value } }) => {
-        setState({
-            ...state,
-            [name]: value,
-        })
-    }
-
     const handleFormSubmit = async (event) => {
-            try {
-                await axios.post('http://localhost:3001/users/restpassword',{email:email})
-                navigate('/check-email')
-            } catch (e) {
-                setMessage("uesr not found")
-            }
-        }
-        
-    
 
-    let { email } = state
+        if (userInfo.password !== userInfo.confirmPassword) {
+            setMessage("Password and Confirm Password must be the same")
+        }
+        else {
+            await axios.post("http://localhost:3001/users/update-password", { id: id, password: userInfo.password })
+            navigate("/session/signin")
+        }
+
+    }
+    React.useEffect(() => {
+        const getUserId = async () => {
+            try {
+                const data = await axios.post("http://localhost:3001/users/verify-restpassword", { restpassword: restpassword })
+                setId(data.data.id)
+            } catch (error) {
+                navigate("/session/404")
+            }
+
+
+        }
+        getUserId()
+
+
+    }, []);
 
     return (
-        <ForgotPasswordRoot>
+        <JWTRoot>
             <Card className="card">
                 <Grid container>
                     <Grid item lg={5} md={5} sm={5} xs={12}>
@@ -83,47 +109,57 @@ const ForgotPassword = () => {
                                 <TextValidator
                                     sx={{ mb: 3, width: '100%' }}
                                     variant="outlined"
-                                    label="Email"
-                                    onChange={handleChange}
-                                    type="email"
-                                    name="email"
                                     size="small"
-                                    value={email || ''}
-                                    validators={['required', 'isEmail']}
+                                    label="New Password"
+                                    onChange={handleChange}
+                                    type="password"
+                                    name="password"
+                                    value={userInfo.password}
+                                    validators={['required']}
                                     errorMessages={[
                                         'this field is required',
-                                        'email is not valid',
                                     ]}
                                 />
+                                <TextValidator
+                                    sx={{ mb: '12px', width: '100%' }}
+                                    label="Confirm password"
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={handleChange}
+                                    name="confirmPassword"
+                                    type="password"
+                                    value={userInfo.confirmPassword}
+                                    validators={['required']}
+                                    errorMessages={['this field is required']}
+                                />
+
+
                                 {message && (
                                     <Paragraph sx={{ color: textError }}>
                                         {message}
                                     </Paragraph>
                                 )}
 
+
                                 <FlexBox>
                                     <Button
-                                        variant="contained"
-                                        color="primary"
                                         type="submit"
-                                    >
-                                        Reset Password
-                                    </Button>
-                                    <Span sx={{ mr: 1, ml: '16px' }}>or</Span>
-                                    <Button
+                                        color="primary"
+                                        variant="contained"
                                         sx={{ textTransform: 'capitalize' }}
-                                        onClick={() => navigate("/session/signin")}
                                     >
-                                        Sign in
+                                        Change
                                     </Button>
+
                                 </FlexBox>
                             </ValidatorForm>
                         </ContentBox>
                     </Grid>
                 </Grid>
             </Card>
-        </ForgotPasswordRoot>
+        </JWTRoot>
     )
 }
 
-export default ForgotPassword
+export default ChangePassword
+

@@ -8,6 +8,7 @@ import MatxLayout from '../components/MatxLayout/MatxLayout'
 import { Navigate } from 'react-router-dom'
 import CheckMail from 'app/views/sessions/CheckMail'
 import VerifyUser from 'app/views/sessions/VerifyUser'
+import ChangePassword from 'app/views/sessions/ChangePassword'
 
 export const AllPages = () => {
     const all_routes = [
@@ -31,6 +32,10 @@ export const AllPages = () => {
         {
             path: '/check-email',
             element: <CheckMail />,
+        }, 
+        {
+            path: '/reset-password/:restpassword',
+            element: <ChangePassword />,
         },
         {
             path: '*',

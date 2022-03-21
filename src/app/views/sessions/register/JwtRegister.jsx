@@ -44,6 +44,7 @@ const JwtRegister = () => {
     const { register } = useAuth()
     const [message, setMessage] = useState('')
 
+    
     const { palette } = useTheme()
     const textError = palette.error.main
 
