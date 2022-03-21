@@ -19,6 +19,8 @@ const dashboardRoutes = [
     {
         path: '/users',
         element: <Users />,
+        auth: authRoles.admin,
+
     },
     {
         path: '/stat',

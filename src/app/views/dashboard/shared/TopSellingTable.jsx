@@ -1,18 +1,13 @@
 import React from 'react'
-import { Paragraph } from 'app/components/Typography'
 import { Box, styled, useTheme } from '@mui/system'
 import {
     Card,
-    Icon,
-    IconButton,
     Table,
     TableHead,
     TableRow,
     TableCell,
     TableBody,
-    Avatar,
-    MenuItem,
-    Select,
+    
 } from '@mui/material'
 
 const CardHeader = styled('div')(() => ({
@@ -61,9 +56,7 @@ const Small = styled('small')(({ bgcolor }) => ({
 
 const TopSellingTable = () => {
     const { palette } = useTheme()
-    const bgError = palette.error.main
-    const bgPrimary = palette.primary.main
-    const bgSecondary = palette.secondary.main
+    
 
     return (
         <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
