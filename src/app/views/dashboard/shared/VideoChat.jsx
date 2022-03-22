@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import io from "socket.io-client";
 import Peer from "simple-peer";
+import ReactHowler from "react-howler";
 
 export default function VideoChat() {
     
@@ -9,6 +10,8 @@ export default function VideoChat() {
     const [caller, setCaller] = useState("");
     const [callerSignal, setCallerSignal] = useState();
     const [partnerId, setpartnerId] = useState("")
+    const [playing, setPlaying] = useState(false);
+
     const userVideo = useRef();
     const partnerVideo = useRef();
     const socket = useRef() ; 
@@ -42,6 +45,7 @@ export default function VideoChat() {
 
     const acceptCall = () => {
         setReceivingCall(false);
+        pauseSound() ; 
         const peer = new Peer({
           initiator: false,
           trickle: false,
@@ -58,8 +62,17 @@ export default function VideoChat() {
         peer.signal(callerSignal);
       }
 
+      const playSound = () => {
+        setPlaying(true);
+      };
+    
+      const pauseSound = () => {
+        setPlaying(false);
+      };
+    
 
     useEffect(() => {
+
         socket.current = io.connect("http://localhost:3002");
 
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
@@ -69,16 +82,20 @@ export default function VideoChat() {
             }
         })
         socket.current.on("hey", (data) => {
+            playSound() ; 
             setReceivingCall(true);
             setCaller(data.from);
             setCallerSignal(data.signal);
         })
 
     }, []);
+    
     return (
         <div>
+
             {receivingCall ? (
                 <div>
+                    <ReactHowler autoPlay playing={playing} src='https://assets.mixkit.co/sfx/download/mixkit-marimba-waiting-ringtone-1360.wav'/>
                     <h1>{caller} is calling you</h1>
                     <button onClick={acceptCall}>Accept</button>
                 </div>
