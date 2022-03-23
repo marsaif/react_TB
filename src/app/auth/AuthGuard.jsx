@@ -15,7 +15,6 @@ const getUserRoleAuthStatus = (pathname, user, routes) => {
         matched && matched.auth && matched.auth.length
             ? matched.auth.includes(user.role)
             : true
-    console.log(matched, user)
     return authenticated
 }
 
@@ -28,7 +27,6 @@ const AuthGuard = ({ children }) => {
     const { pathname } = useLocation()
     const routes = flat(AllPages())
 
-    console.log(user)
 
     const isUserRoleAuthenticated = getUserRoleAuthStatus(
         pathname,

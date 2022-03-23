@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
-    const register = async (email, firstName, password , confirm , phone , birthDate , adress ,sex , role,speciality) => {
+    const register = async (email, firstName, password, confirm, phone, birthDate, adress, sex, role, speciality) => {
         const response = await axios.post('http://localhost:3001/users', {
             email,
             firstName,
@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
             speciality
         })
 
-      console.log(response.status)
+        console.log(response.status)
     }
 
     const logout = () => {
@@ -129,8 +129,11 @@ export const AuthProvider = ({ children }) => {
 
                 if (accessToken && isValidToken(accessToken)) {
                     setSession(accessToken)
-                    const response = await axios.get('/api/auth/profile')
+
+                    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+                    const response = await axios.get("http://localhost:3001/users/getUser");
                     const { user } = response.data
+
 
                     dispatch({
                         type: 'INIT',
