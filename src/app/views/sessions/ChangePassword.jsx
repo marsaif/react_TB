@@ -2,7 +2,7 @@ import {
     Card,
     Grid,
     Button,
-    CircularProgress,
+    
 } from '@mui/material'
 import React, { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -75,6 +75,7 @@ const ChangePassword = () => {
         }
 
     }
+    
     React.useEffect(() => {
         const getUserId = async () => {
             try {
@@ -88,7 +89,7 @@ const ChangePassword = () => {
         }
         getUserId()
 
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

@@ -1,8 +1,6 @@
 import React from 'react'
 import { Box, styled } from '@mui/system'
-import { Span } from 'app/components/Typography'
-import { Card, Grid, Button } from '@mui/material'
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
+import { Card, Grid } from '@mui/material'
 
 const FlexBox = styled(Box)(() => ({
     display: 'flex',

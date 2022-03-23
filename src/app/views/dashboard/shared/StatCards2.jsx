@@ -27,11 +27,7 @@ const H1 = styled('h1')(({ theme }) => ({
     color: theme.palette.text.secondary,
 }))
 
-const Span = styled('span')(({ textcolor }) => ({
-    fontSize: '13px',
-    color: textcolor,
-    marginLeft: '4px',
-}))
+
 
 const IconBox = styled('div')(({ theme }) => ({
     width: 16,

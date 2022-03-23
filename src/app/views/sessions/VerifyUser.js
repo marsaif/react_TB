@@ -19,7 +19,7 @@ export default function VerifyUser() {
         }
         verifyToken()
 
-
+                // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
