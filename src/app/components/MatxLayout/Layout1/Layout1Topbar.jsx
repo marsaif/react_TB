@@ -132,9 +132,7 @@ const Layout1Topbar = () => {
                             <Icon>web_asset</Icon>
                         </StyledIconButton>
 
-                        <StyledIconButton>
-                            <Icon>star_outline</Icon>
-                        </StyledIconButton>
+                        
                     </IconBox>
                 </Box>
                 <Box display="flex" alignItems="center">
@@ -171,10 +169,6 @@ const Layout1Topbar = () => {
                                 <Icon> person </Icon>
                                 <Span> Profile </Span>
                             </Link>
-                        </StyledItem>
-                        <StyledItem>
-                            <Icon> settings </Icon>
-                            <Span> Settings </Span>
                         </StyledItem>
                         <StyledItem onClick={logout}>
                             <Icon> power_settings_new </Icon>
