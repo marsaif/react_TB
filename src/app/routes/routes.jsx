@@ -34,7 +34,7 @@ export const AllPages = () => {
             element: <CheckMail />,
         }, 
         {
-            path: '/reset-password/:restpassword',
+            path: '/reset-password/:resetpassword',
             element: <ChangePassword />,
         },
         {

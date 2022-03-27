@@ -54,7 +54,7 @@ const ForgotPassword = () => {
 
     const handleFormSubmit = async (event) => {
             try {
-                await axios.post('http://localhost:3001/users/restpassword',{email:email})
+                await axios.post('http://localhost:3001/users/resetpassword',{email:email})
                 navigate('/check-email')
             } catch (e) {
                 setMessage("uesr not found")

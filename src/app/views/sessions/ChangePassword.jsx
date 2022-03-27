@@ -52,7 +52,7 @@ const ChangePassword = () => {
     const [message, setMessage] = useState('')
     const [id, setId] = useState('')
 
-    const { restpassword } = useParams()
+    const { resetpassword } = useParams()
 
     const handleChange = ({ target: { name, value } }) => {
         let temp = { ...userInfo }
@@ -79,7 +79,7 @@ const ChangePassword = () => {
     React.useEffect(() => {
         const getUserId = async () => {
             try {
-                const data = await axios.post("http://localhost:3001/users/verify-restpassword", { restpassword: restpassword })
+                const data = await axios.post("http://localhost:3001/users/verify-resetpassword", { resetpassword: resetpassword })
                 setId(data.data.id)
             } catch (error) {
                 navigate("/session/404")
