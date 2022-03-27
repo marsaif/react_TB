@@ -2,6 +2,7 @@ import React, { lazy } from 'react'
 import Loadable from 'app/components/Loadable/Loadable'
 import { authRoles } from '../../auth/authRoles'
 import AppEchart from '../cards/echarts/AppEchart'
+import Profile from '../sessions/profile/Profile'
 
 
 const Analytics = Loadable(lazy(() => import('./Analytics')))
@@ -35,6 +36,11 @@ const dashboardRoutes = [
         path: '/medicalrecord/:idpatient',
         element: <MedicalRecordForm />,
     }
+    ,
+    {
+        path: '/profile',
+        element: <Profile />,
+    }
+ 
 ]
-
 export default dashboardRoutes
