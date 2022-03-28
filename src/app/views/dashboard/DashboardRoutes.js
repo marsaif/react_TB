@@ -4,6 +4,7 @@ import { authRoles } from '../../auth/authRoles'
 import AppEchart from '../cards/echarts/AppEchart'
 import Chat from './shared/Chat'
 import VideoChat from './shared/VideoChat'
+import Profile from '../sessions/profile/Profile'
 
 
 const Analytics = Loadable(lazy(() => import('./Analytics')))
@@ -16,7 +17,7 @@ const dashboardRoutes = [
     {
         path: '/dashboard/default',
         element: <Analytics />,
-        auth: authRoles.admin,
+        auth: authRoles.doctor,
     },
     {
         path: '/chat',
@@ -31,6 +32,8 @@ const dashboardRoutes = [
     {
         path: '/users',
         element: <Users />,
+        auth: authRoles.admin,
+
     },
     {
         path: '/stat',
@@ -45,6 +48,11 @@ const dashboardRoutes = [
         path: '/medicalrecord/:idpatient',
         element: <MedicalRecordForm />,
     }
+    ,
+    {
+        path: '/profile',
+        element: <Profile />,
+    }
+ 
 ]
-
 export default dashboardRoutes

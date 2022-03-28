@@ -34,7 +34,7 @@ const Paragraph = styled('p')(({ theme }) => ({
 }))
 
 const UpgradeCard = () => {
-    const [subs,Setsubs]=useState({
+    const [subs]=useState({
         name:"subscription to tbibi platform",
         price:20
     })

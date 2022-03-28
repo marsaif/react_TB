@@ -1,60 +1,102 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { TextField } from '@mui/material';
-import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import axios from 'axios';
+import { Button } from '@mui/material';
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last name', width: 130 },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 90,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
-  {
-    field: 'email',
-    headerName: 'Email',
-    sortable: false,
-    width: 160,
-  },
-];
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35, email: "test@gmail.com" },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42, email: "test@gmail.com" },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45, email: "test@gmail.com" },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16, email: "test@gmail.com" },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: 20, email: "test@gmail.com" },
 
-];
 
 export default function Users() {
   const [role, setRole] = React.useState('');
+  const [rows, setRows] = React.useState([]);
+
+  const acceptDoctor = async (id) => {
+
+  
+    await axios.post("http://localhost:3001/users/accept-doctor",{id:id});
+    fetchData()
+   }
+  const renderDetailsButton = (params) => {
+    return (
+      <strong>
+        {
+          (!params.row.accepted) && (params.row.role === "DOCTOR") ? (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: 16 }}
+              onClick={()=>
+              {
+                acceptDoctor(params.row._id)
+               
+              }}
+            >
+              accept
+            </Button>) : ""
+        }
+
+      </strong>
+    )
+  }
+
+  const columns = [
+    { field: 'firstName', headerName: 'First name', width: 130 },
+    { field: 'lastName', headerName: 'Last Name', width: 130 },
+    {
+      field: 'email',
+      headerName: 'Email',
+      sortable: false,
+      width: 160,
+    },
+    { field: 'phone', headerName: 'Phone', width: 130 },
+    { field: 'role', headerName: 'Role', width: 130 },
+    { field: 'birthDate', headerName: 'BirthDate', width: 130 },
+    { field: 'sex', headerName: 'Sex', width: 130 },
+    { field: 'adress', headerName: 'Adress', width: 130 },
+    {
+      field: 'action',
+      headerName: 'Action',
+      width: 150,
+      renderCell: renderDetailsButton,
+    }
+
+
+  ];
+
+  async function fetchData() {
+    const accessToken = localStorage.getItem('accessToken')
+    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+    const response = await axios.get("http://localhost:3001/users");
+    setRows(response.data)
+  }
+
+  React.useEffect(() => {
+
+    fetchData();
+  }, []);
+
+
 
   const handleChange = (event) => {
     setRole(event.target.value);
   };
+
+
+ 
+
+
   return (
     <>
       <TextField id="filled-basic" label="Search" variant="outlined" sx={{ m: 5 }} style={{ width: '80%', textAlign: "center" }} placeholder='Search' />
       <FormControl sx={{ my: 5 }} style={{ width: '10%' }}>
         <InputLabel id="demo-simple-select-label">role</InputLabel>
-        <Select 
+        <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={role}
@@ -70,10 +112,10 @@ export default function Users() {
         <DataGrid
           sx={{ mx: 4 }}
           rows={rows}
+          getRowId={(row) => row._id}
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
-          checkboxSelection
         />
       </div>
     </>

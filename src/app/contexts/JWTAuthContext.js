@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
     const login = async (email, password) => {
-        const response = await axios.post('/api/auth/login', {
+        const response = await axios.post('http://localhost:3001/users/login', {
             email,
             password,
         })
@@ -100,24 +100,21 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
-    const register = async (email, firstName, password) => {
+    const register = async (email, firstName, password, confirm, phone, birthDate, adress, sex, role, speciality) => {
         const response = await axios.post('http://localhost:3001/users', {
             email,
             firstName,
             password,
+            confirm,
+            phone,
+            birthDate,
+            adress,
+            sex,
+            role,
+            speciality
         })
 
-        const { accessToken, user } = response.data
-        console.log(accessToken+""+user)
-
-        setSession(accessToken)
-
-        dispatch({
-            type: 'REGISTER',
-            payload: {
-                user,
-            },
-        })
+        console.log(response.status)
     }
 
     const logout = () => {
@@ -132,8 +129,11 @@ export const AuthProvider = ({ children }) => {
 
                 if (accessToken && isValidToken(accessToken)) {
                     setSession(accessToken)
-                    const response = await axios.get('/api/auth/profile')
+
+                    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+                    const response = await axios.get("http://localhost:3001/users/getUser");
                     const { user } = response.data
+
 
                     dispatch({
                         type: 'INIT',

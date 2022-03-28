@@ -18,12 +18,14 @@ const errorRoute = [
     },
 ]
 
+
+
 const routes = [
     ...dashboardRoutes,
     ...materialRoutes,
     ...chartsRoute,
     ...redirectRoute,
-    ...errorRoute,
+    ...errorRoute
 ]
 
 export default routes

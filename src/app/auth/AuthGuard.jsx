@@ -1,8 +1,7 @@
 import useAuth from 'app/hooks/useAuth'
 import { flat } from 'app/utils/utils'
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import AppContext from '../contexts/AppContext'
 import { AllPages } from '../routes/routes'
 
 const getUserRoleAuthStatus = (pathname, user, routes) => {
@@ -15,7 +14,6 @@ const getUserRoleAuthStatus = (pathname, user, routes) => {
         matched && matched.auth && matched.auth.length
             ? matched.auth.includes(user.role)
             : true
-    console.log(matched, user)
     return authenticated
 }
 
@@ -28,7 +26,6 @@ const AuthGuard = ({ children }) => {
     const { pathname } = useLocation()
     const routes = flat(AllPages())
 
-    console.log(user)
 
     const isUserRoleAuthenticated = getUserRoleAuthStatus(
         pathname,

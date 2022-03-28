@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { Box, styled } from '@mui/system'
+import { Box,  styled, useTheme } from '@mui/system'
 import { useNavigate } from 'react-router-dom'
-import { Span } from 'app/components/Typography'
+import { Paragraph, Span } from 'app/components/Typography'
 import { Card, Grid, Button } from '@mui/material'
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
+import axios from 'axios'
 
 const FlexBox = styled(Box)(() => ({
     display: 'flex',
@@ -38,6 +39,11 @@ const ForgotPasswordRoot = styled(JustifyBox)(() => ({
 const ForgotPassword = () => {
     const navigate = useNavigate()
     const [state, setState] = useState({})
+    const [message, setMessage] = useState('')
+    const { palette } = useTheme()
+
+    const textError = palette.error.main
+
 
     const handleChange = ({ target: { name, value } }) => {
         setState({
@@ -46,9 +52,16 @@ const ForgotPassword = () => {
         })
     }
 
-    const handleFormSubmit = (event) => {
-        console.log(state)
-    }
+    const handleFormSubmit = async (event) => {
+            try {
+                await axios.post('http://localhost:3001/users/resetpassword',{email:email})
+                navigate('/check-email')
+            } catch (e) {
+                setMessage("uesr not found")
+            }
+        }
+        
+    
 
     let { email } = state
 
@@ -82,6 +95,12 @@ const ForgotPassword = () => {
                                         'email is not valid',
                                     ]}
                                 />
+                                {message && (
+                                    <Paragraph sx={{ color: textError }}>
+                                        {message}
+                                    </Paragraph>
+                                )}
+
                                 <FlexBox>
                                     <Button
                                         variant="contained"

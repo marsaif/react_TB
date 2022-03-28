@@ -1,10 +1,13 @@
 import useAuth from 'app/hooks/useAuth'
 import React, { useState } from 'react'
-import { Box, styled } from '@mui/system'
+import { Box, styled, useTheme } from '@mui/system'
 import { useNavigate } from 'react-router-dom'
-import { Span } from 'app/components/Typography'
-import { Card, Checkbox, FormControlLabel, Grid, Button } from '@mui/material'
+import { Paragraph, Span } from 'app/components/Typography'
+import { Card, FormControlLabel, Grid, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator'
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormLabel from '@mui/material/FormLabel';
 
 const FlexBox = styled(Box)(() => ({
     display: 'flex',
@@ -37,28 +40,40 @@ const JWTRegister = styled(JustifyBox)(() => ({
 
 const JwtRegister = () => {
     const navigate = useNavigate()
-    const [state, setState] = useState({})
+    const [state, setState] = useState({role:"PATIENT",sex:"man"})
     const { register } = useAuth()
+    const [message, setMessage] = useState('')
+
+    
+    const { palette } = useTheme()
+    const textError = palette.error.main
 
     const handleChange = ({ target: { name, value } }) => {
         setState({
             ...state,
             [name]: value,
         })
+
     }
 
-    const handleFormSubmit = (event) => {
-        try {
-            console.log(state.email, state.firstName, state.password)
 
-            register(state.email, state.firstName, state.password)
-            navigate('/')
+    const handleFormSubmit = async (event) => {
+        try {
+
+            if(state.role === "PATIENT")
+            {
+                state.speciality=''
+            }
+            await register(state.email, state.firstName, state.password, state.confirm, state.phone, state.birthDate, state.adress, state.sex, state.role ,state.speciality)
+            navigate('/check-email')
         } catch (e) {
             console.log(e)
+            setMessage(e.message)
+
         }
     }
 
-    let { firstName, email, password, agreement } = state
+    let { firstName, email, password, confirm, phone, birthDate, adress,role ,sex,speciality} = state
 
     return (
         <JWTRegister>
@@ -114,25 +129,104 @@ const JwtRegister = () => {
                                     validators={['required']}
                                     errorMessages={['this field is required']}
                                 />
-                                <FormControlLabel
-                                    sx={{ mb: '16px' }}
-                                    name="agreement"
-                                    onChange={(e) =>
-                                        handleChange({
-                                            target: {
-                                                name: 'agreement',
-                                                value: e.target.checked,
-                                            },
-                                        })
-                                    }
-                                    control={
-                                        <Checkbox
-                                            size="small"
-                                            checked={agreement || false}
-                                        />
-                                    }
-                                    label="I have read and agree to the terms of service."
+                                <TextValidator
+                                    sx={{ mb: '16px', width: '100%' }}
+                                    label="Confirm Password"
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={handleChange}
+                                    name="confirm"
+                                    type="password"
+                                    value={confirm || ''}
+                                    validators={['required']}
+                                    errorMessages={['this field is required']}
                                 />
+                                <TextValidator
+                                    sx={{ mb: '16px', width: '100%' }}
+                                    label="Phone"
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={handleChange}
+                                    name="phone"
+                                    type="number"
+                                    value={phone || ''}
+                                    validators={['required']}
+                                    errorMessages={['this field is required']}
+                                />
+                                <TextValidator
+                                    sx={{ mb: 3, width: '100%' }}
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={handleChange}
+                                    type="date"
+                                    name="birthDate"
+                                    value={birthDate || ''}
+                                    validators={['required']}
+                                    errorMessages={['this field is required']}
+                                />
+                                <TextValidator
+                                    sx={{ mb: 3, width: '100%' }}
+                                    variant="outlined"
+                                    size="small"
+                                    label="Adress"
+                                    onChange={handleChange}
+                                    type="text"
+                                    name="adress"
+                                    value={adress || ''}
+                                    validators={['required']}
+                                    errorMessages={['this field is required']}
+                                />
+                                <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Role</InputLabel>
+
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    name="role"
+                                    value={role}
+                                    label="Role"
+                                    onChange={handleChange}
+                                    sx={{ mb: 3, width: '100%' }}
+                                >
+                                    <MenuItem value="PATIENT">Patient</MenuItem>
+                                    <MenuItem value="DOCTOR">Doctor</MenuItem>
+                                </Select>
+                                </FormControl>
+                                {
+                                    state.role === "DOCTOR" ? (
+                                        <TextValidator
+                                    sx={{ mb: 3, width: '100%' }}
+                                    variant="outlined"
+                                    size="small"
+                                    label="Speciality"
+                                    onChange={handleChange}
+                                    type="text"
+                                    name="speciality"
+                                    value={speciality || ''}
+                                    validators={['required']}
+                                    errorMessages={['this field is required']}
+                                />
+                                    ): ""
+                                }
+                                <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+                                <RadioGroup
+                                    row
+                                    aria-labelledby="demo-row-radio-buttons-group-label"
+                                    name="sex"
+                                    onChange={handleChange}
+                                    value={sex}
+                                >
+                                    <FormControlLabel value="woman" control={<Radio />} label="Woman" />
+                                    <FormControlLabel value="man" control={<Radio />} label="Man" />
+                                </RadioGroup>
+
+                                {message && (
+                                    <Paragraph sx={{ color: textError }}>
+                                        {message}
+                                    </Paragraph>
+                                )}
+
+
                                 <FlexBox>
                                     <Button
                                         type="submit"
