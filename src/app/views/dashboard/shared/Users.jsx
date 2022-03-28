@@ -6,50 +6,89 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import axios from 'axios';
+import { Button } from '@mui/material';
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last Name', width: 130 },
-  {
-    field: 'email',
-    headerName: 'Email',
-    sortable: false,
-    width: 160,
-  },
-  { field: 'phone', headerName: 'Phone', width: 130 },
-  { field: 'role', headerName: 'Role', width: 130 },
-  { field: 'birthDate', headerName: 'BirthDate', width: 130 },
-  { field: 'sex', headerName: 'Sex', width: 130 },
-  { field: 'adress', headerName: 'Adress', width: 130 },
-
- 
-];
 
 
 
 export default function Users() {
   const [role, setRole] = React.useState('');
-  const [rows, setRows] = React.useState([  ]);
+  const [rows, setRows] = React.useState([]);
+
+  const acceptDoctor = async (id) => {
 
   
-  React.useEffect(() => {
-    async function fetchData() {
-      const accessToken = localStorage.getItem('accessToken')
-      axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-      console.log(accessToken)
-      const response = await axios.get("http://localhost:3001/users") ;
-      console.log(response.data)
-      setRows(response.data)
+    await axios.post("http://localhost:3001/users/accept-doctor",{id:id});
+    fetchData()
+   }
+  const renderDetailsButton = (params) => {
+    return (
+      <strong>
+        {
+          (!params.row.accepted) && (params.row.role === "DOCTOR") ? (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: 16 }}
+              onClick={()=>
+              {
+                acceptDoctor(params.row._id)
+               
+              }}
+            >
+              accept
+            </Button>) : ""
+        }
+
+      </strong>
+    )
+  }
+
+  const columns = [
+    { field: 'firstName', headerName: 'First name', width: 130 },
+    { field: 'lastName', headerName: 'Last Name', width: 130 },
+    {
+      field: 'email',
+      headerName: 'Email',
+      sortable: false,
+      width: 160,
+    },
+    { field: 'phone', headerName: 'Phone', width: 130 },
+    { field: 'role', headerName: 'Role', width: 130 },
+    { field: 'birthDate', headerName: 'BirthDate', width: 130 },
+    { field: 'sex', headerName: 'Sex', width: 130 },
+    { field: 'adress', headerName: 'Adress', width: 130 },
+    {
+      field: 'action',
+      headerName: 'Action',
+      width: 150,
+      renderCell: renderDetailsButton,
     }
+
+
+  ];
+
+  async function fetchData() {
+    const accessToken = localStorage.getItem('accessToken')
+    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+    const response = await axios.get("http://localhost:3001/users");
+    setRows(response.data)
+  }
+
+  React.useEffect(() => {
+
     fetchData();
-  }, []); 
-  
+  }, []);
+
+
 
   const handleChange = (event) => {
     setRole(event.target.value);
   };
 
+
+ 
 
 
   return (
@@ -57,7 +96,7 @@ export default function Users() {
       <TextField id="filled-basic" label="Search" variant="outlined" sx={{ m: 5 }} style={{ width: '80%', textAlign: "center" }} placeholder='Search' />
       <FormControl sx={{ my: 5 }} style={{ width: '10%' }}>
         <InputLabel id="demo-simple-select-label">role</InputLabel>
-        <Select 
+        <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={role}
@@ -77,7 +116,6 @@ export default function Users() {
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
-          checkboxSelection
         />
       </div>
     </>
