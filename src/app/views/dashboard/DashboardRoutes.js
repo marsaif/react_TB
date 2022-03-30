@@ -6,12 +6,12 @@ import Chat from './shared/Chat'
 import VideoChat from './shared/VideoChat'
 import Profile from '../sessions/profile/Profile'
 
-
 const Analytics = Loadable(lazy(() => import('./Analytics')))
 const Users = Loadable(lazy(() => import('./shared/Users')))
 const Apointments = Loadable(lazy(() => import('./shared/Apointments')))
-const MedicalRecordForm = Loadable(lazy(() => import('./shared/MedicalRecordForm')))
-
+const MedicalRecordForm = Loadable(
+    lazy(() => import('./shared/MedicalRecordForm'))
+)
 
 const dashboardRoutes = [
     {
@@ -22,18 +22,17 @@ const dashboardRoutes = [
     {
         path: '/chat',
         element: <Chat />,
-        auth: authRoles.admin,
+        auth: authRoles.doctor,
     },
     {
         path: '/video-chat',
         element: <VideoChat />,
-        auth: authRoles.admin,
+        auth: authRoles.doctor,
     },
     {
         path: '/users',
         element: <Users />,
         auth: authRoles.admin,
-
     },
     {
         path: '/stat',
@@ -42,17 +41,14 @@ const dashboardRoutes = [
     {
         path: '/apointments',
         element: <Apointments />,
-    }
-    ,
+    },
     {
         path: '/medicalrecord/:idpatient',
         element: <MedicalRecordForm />,
-    }
-    ,
+    },
     {
         path: '/profile',
         element: <Profile />,
-    }
- 
+    },
 ]
 export default dashboardRoutes
