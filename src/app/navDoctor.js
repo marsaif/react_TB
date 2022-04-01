@@ -4,10 +4,11 @@ export const navDoctor = [
         path: '/apointments',
         icon: 'person',
     },
+    
     {
-        name: 'Medical Record',
-        path: '/medicalrecord/:idpatient',
+        name: 'Patients Medical Records',
+        path: '/patientsHistoryRecord',
         icon: 'person',
-    },
+    }
  
 ]
