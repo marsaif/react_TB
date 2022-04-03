@@ -12,6 +12,12 @@ const Apointments = Loadable(lazy(() => import('./shared/Apointments')))
 const MedicalRecordForm = Loadable(
     lazy(() => import('./shared/MedicalRecordForm'))
 )
+const PatientsHistoryRecord = Loadable(
+    lazy(() => import('./shared/PatientsHistoryRecord'))
+)
+const MedicalRecordDetail = Loadable(
+    lazy(() => import('./shared/MedicalRecordDetail'))
+)
 
 const dashboardRoutes = [
     {
@@ -45,6 +51,14 @@ const dashboardRoutes = [
     {
         path: '/medicalrecord/:idpatient',
         element: <MedicalRecordForm />,
+    },
+    {
+        path: '/patientsHistoryRecord',
+        element: <PatientsHistoryRecord />,
+    },
+    {
+        path: '/medicalRecordDetails/:idrecord',
+        element: <MedicalRecordDetail />,
     },
     {
         path: '/profile',

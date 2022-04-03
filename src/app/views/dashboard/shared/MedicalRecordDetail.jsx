@@ -17,27 +17,36 @@ import AddIcon from '@mui/icons-material/Add';
 import NavigationIcon from '@mui/icons-material/Navigation';
 import Button from '@material-ui/core/Button';
 import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
-export default function MedicalRecordForm() {
-  const navigate = useNavigate();
+export default function MedicalRecordDetail() {
 
-  const { idpatient } = useParams();
+  const { idrecord } = useParams();
 
-  const [patient, setpatient] = useState([])
-  const [patientid, setpatientid] = useState([])
+  const [patient, setpatient] = useState({})
+  const [medRecord, setmedRecord] = useState([])
 
 
   useEffect(() => {
     // Update the document title using the browser API
-    axios.get("http://localhost:3001/users/" + idpatient).then((res) => {
-      console.log(res.data.email)
+    axios.get("http://localhost:3001/users/" + "555").then((res) => {
       setpatient(res.data)
-      setpatientid(res.data.email)
 
     })
   }, []);
 
+  useEffect(() => {
+    // Update the document title using the browser API
+    axios.get("http://localhost:3001/medicalrecord/medicalrecorddetail/" + idrecord).then((res) => {
+      console.log(res.data)
+      setmedRecord(res.data.data)
+      axios.get("http://localhost:3001/users/" + res.data.data.patient).then((res) => {
+        setpatient(res.data)
+
+      })
+
+
+    })
+  }, []);
 
 
 
@@ -67,13 +76,15 @@ export default function MedicalRecordForm() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    console.log(meds)
 
     formData.medsList = meds
+    console.log(formData);
+    toast("Medical record saved succesfully!");
 
     axios.post('http://localhost:3001/medicalrecord', {
       data: formData,
       patient: patient,
-      emailpatient: patientid
     })
       .then(function (response) {
         console.log("+++++++++++++");
@@ -81,11 +92,8 @@ export default function MedicalRecordForm() {
         console.log(response);
       })
       .catch(function (error) {
-        console.log("-----------");
-
         console.log(error);
       });
-    navigate('/patientsHistoryRecord/');
 
   };
 
@@ -102,7 +110,7 @@ export default function MedicalRecordForm() {
       autoComplete="off"
     >
 
-      <h1 style={{ width: '100%', textAlign: 'center' }}>Patient medical record</h1>
+      <h1 style={{ width: '100%', textAlign: 'center' }}>Medical Record detail</h1>
       <Grid container spacing={1} style={{ display: 'flex', justifyContent: 'center' }}>
         <Grid item >
 
@@ -120,11 +128,10 @@ export default function MedicalRecordForm() {
         <Grid item >
 
           <TextField
+            value={Moment(patient.birthDate).format('d MMM YYYY')}
             InputProps={{
               readOnly: true,
             }}
-            value={Moment(patient.birthDate).format('d MMM YYYY')}
-
             label="Date of Birth"
             variant="standard"
           />
@@ -145,11 +152,10 @@ export default function MedicalRecordForm() {
         <Grid item >
 
           <TextField
+            value={patient.adress || ""}
             InputProps={{
               readOnly: true,
             }}
-            value={patient.adress || ""}
-
             label="Address"
             variant="standard"
           />
@@ -160,12 +166,12 @@ export default function MedicalRecordForm() {
         <Grid item>
 
           <TextField
+            value={patient.phone + ""}
+            label="Phone"
+            variant="standard"
             InputProps={{
               readOnly: true,
             }}
-            value={patient.phone || ""}
-            label="Phone"
-            variant="standard"
           />
         </Grid>
         <Grid item >
@@ -198,6 +204,9 @@ export default function MedicalRecordForm() {
             multiline
             rows={4}
             name="CurrentMedicalConditions"
+            InputProps={{
+              readOnly: true,
+            }} value={medRecord.CurrentMedicalConditions || ""}
             onChange={(e) => onChange(e)}
 
           />
@@ -214,8 +223,11 @@ export default function MedicalRecordForm() {
             label="Family history"
             multiline
             rows={4}
+            value={medRecord.familyHistory || ""}
             onChange={(e) => onChange(e)}
-
+            InputProps={{
+              readOnly: true,
+            }}
           />
 
         </Grid>
@@ -228,8 +240,10 @@ export default function MedicalRecordForm() {
           <ChipInput label="Current Medications "
             id="outlined-multiline-static"
             name="medsList"
-
-            onChange={(chips) => handleChange(chips)}
+            defaultValue={medRecord.currentMedications}
+            InputProps={{
+              readOnly: true,
+            }}
           />
         </Grid>
 
@@ -238,13 +252,16 @@ export default function MedicalRecordForm() {
         <Grid item xs={8} >
 
           <TextField style={{ width: '100%' }}
-
+            InputProps={{
+              readOnly: true,
+            }}
             name="allergies"
             id="outlined-multiline-static"
             label="Allergies Reactions to Treatment"
             multiline
             rows={4}
             onChange={(e) => onChange(e)}
+            value={medRecord.AllergiesReactionstoTreatment || ""}
 
           />
 
@@ -262,15 +279,7 @@ export default function MedicalRecordForm() {
         />
 
       </Grid>
-      <Grid container spacing={1} style={{ display: 'flex', justifyContent: 'center' }}>
-        <Grid item >
 
-          <Button variant="contained" type="submit">Save Medical Record</Button>
-
-        </Grid>
-
-
-      </Grid>
     </Box>
   );
 }
