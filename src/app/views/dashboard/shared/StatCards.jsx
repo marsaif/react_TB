@@ -2,6 +2,8 @@ import React from 'react'
 import { Grid, Card, Icon, IconButton, Tooltip } from '@mui/material'
 import { Box, styled } from '@mui/system'
 import { Small } from 'app/components/Typography'
+import axios from 'axios';
+import { useState, useEffect } from "react";
 
 const StyledCard = styled(Card)(({ theme }) => ({
     display: 'flex',
@@ -37,7 +39,24 @@ const Heading = styled('h6')(({ theme }) => ({
     color: theme.palette.primary.main,
 }))
 
-const StatCards = () => {
+
+let balance;
+
+
+export default function StatCards() {
+    const [balance, setBalance] = useState();
+
+    useEffect(() => {
+        // Update the document title using the browser API
+        axios.get("http://localhost:3001/payments/soldecomptebancaire").then((res) => {
+            console.log(res.data)
+           setBalance(res.data)
+       // balance=res.data    
+    })
+    
+      }, []);
+    
+
     return (
         <Grid container spacing={3} sx={{ mb: '24px' }}>
             <Grid item xs={12} md={6}>
@@ -62,9 +81,9 @@ const StatCards = () => {
                         <Icon className="icon">attach_money</Icon>
                         <Box ml="12px">
                             <Small sx={{ lineHeight: 1 }}>
-                                This week Revenues
+                                All time Revenues
                             </Small>
-                            <Heading>$80,500</Heading>
+                            <Heading>$ {balance}</Heading>
                         </Box>
                     </ContentBox>
                     <Tooltip title="View Details" placement="top">
@@ -77,6 +96,6 @@ const StatCards = () => {
 
         </Grid>
     )
-}
 
-export default StatCards
+
+}

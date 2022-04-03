@@ -56,7 +56,7 @@ export default function PatientsHistoryRecord() {
     const [records, setRecords] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:3001/users/lstusers").then((res) => {
+        axios.get("http://localhost:3001/users/lstpatients").then((res) => {
             console.log(res.data)
             lst = res.data
             setLstusers(res.data)
