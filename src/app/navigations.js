@@ -10,6 +10,11 @@ export const navigations = [
         icon: 'person',
     },
     {
+        name: 'Chat',
+        path: '/chat',
+        icon: 'chat',
+    },
+    {
         name: 'Static',
         path: '/stat',
         icon: 'trending_up',
