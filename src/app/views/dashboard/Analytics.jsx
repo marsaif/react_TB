@@ -39,7 +39,7 @@ const Analytics = () => {
 
                     <Grid item lg={4} md={4} sm={12} xs={12}>
                         <Card sx={{ px: 3, py: 2, mb: 3 }}>
-                            <Title>Roles chart</Title>
+                            <Title>Subscription chart</Title>
                             <DoughnutChart
                                 height="300px"
                                 color={[
