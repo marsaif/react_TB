@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 import {
     Grid,
     Box,
@@ -15,6 +18,17 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 export default function AppointmentForm(props) {
+    const notify = () =>
+        toast.success('appointment added successfuly', {
+            position: 'top-right',
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        })
+
     const navigate = useNavigate()
     const [appointmentData, setAppointmentData] = useState({
         DateAppointment: null,
@@ -25,13 +39,19 @@ export default function AppointmentForm(props) {
     })
     const handleSubmit = (e) => {
         e.preventDefault()
+
         axios
             .post('http://127.0.0.1:3001/appointments', appointmentData)
-            .then(() => navigate('/apointments'))
+            .then(() => {
+                setTimeout(() => {
+                    navigate('/apointments')
+                }, 2300)
+            })
             .catch((err) => {
                 console.log(err)
             })
     }
+
     const handleFieldChange = (e) => {
         setAppointmentData({
             ...appointmentData,
@@ -85,7 +105,10 @@ export default function AppointmentForm(props) {
                     <TextField
                         label="phone"
                         variant="outlined"
-                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                        inputProps={{
+                            inputMode: 'numeric',
+                            pattern: '[0-9]*',
+                        }}
                         name="patientPhone"
                         onChange={handleFieldChange}
                         type="number"
@@ -123,7 +146,10 @@ export default function AppointmentForm(props) {
                     <TextField
                         label="age"
                         variant="outlined"
-                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                        inputProps={{
+                            inputMode: 'numeric',
+                            pattern: '[0-9]*',
+                        }}
                         name="patientAge"
                         onChange={handleFieldChange}
                         type="number"
@@ -132,6 +158,7 @@ export default function AppointmentForm(props) {
 
                 <Grid item>
                     <Button
+                        onClick={notify}
                         variant="contained"
                         type="submit"
                         style={{ marginTop: '50%' }}
@@ -140,6 +167,17 @@ export default function AppointmentForm(props) {
                     </Button>
                 </Grid>
             </Grid>
+            <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </Box>
     )
 }
