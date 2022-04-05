@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { Slide, Zoom, Flip, Bounce } from 'react-toastify'
 
 import {
     Grid,
@@ -18,17 +19,6 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 export default function AppointmentForm(props) {
-    const notify = () =>
-        toast.success('appointment added successfuly', {
-            position: 'top-right',
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        })
-
     const navigate = useNavigate()
     const [appointmentData, setAppointmentData] = useState({
         DateAppointment: null,
@@ -37,6 +27,7 @@ export default function AppointmentForm(props) {
         patientAge: 0,
         gender: 'male',
     })
+
     const handleSubmit = (e) => {
         e.preventDefault()
 
@@ -45,11 +36,22 @@ export default function AppointmentForm(props) {
             .then(() => {
                 setTimeout(() => {
                     navigate('/apointments')
-                }, 2300)
+                }, 2800)
             })
             .catch((err) => {
                 console.log(err)
             })
+    }
+    const notify = () => {
+        toast.success('appointment added 👌', {
+            position: 'top-right',
+            autoClose: 1800,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        })
     }
 
     const handleFieldChange = (e) => {
@@ -168,6 +170,7 @@ export default function AppointmentForm(props) {
                 </Grid>
             </Grid>
             <ToastContainer
+                transition={Flip}
                 position="top-right"
                 autoClose={2000}
                 hideProgressBar={false}
