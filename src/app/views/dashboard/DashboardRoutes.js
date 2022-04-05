@@ -70,4 +70,5 @@ const dashboardRoutes = [
         element: <Profile />,
     },
 ]
-export default dashboardRoutes
+export default dashboardRoutes 
+  
