@@ -7,6 +7,7 @@ import { styled } from '@mui/system'
 import axios from 'axios'
 import {navAdmin} from 'app/navAdmin'
 import {navDoctor} from 'app/navDoctor'
+import {navPatient} from 'app/navPatient'
 
 
 const StyledScrollBar = styled(Scrollbar)(() => ({
@@ -73,7 +74,9 @@ const Sidenav = ({ children }) => {
                     <MatxVerticalNav items={navAdmin} /> :
                     (user?.role === "DOCTOR") ?
                         <MatxVerticalNav items={navDoctor} /> :
-                        <MatxVerticalNav items={navigations} />}
+                        (user?.role === "PATIENT") ?
+                            <MatxVerticalNav items={navPatient} /> :
+                            <MatxVerticalNav items={navigations} />}
 
             </StyledScrollBar>
 

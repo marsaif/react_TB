@@ -24,17 +24,17 @@ const dashboardRoutes = [
     {
         path: '/dashboard/default',
         element: <Analytics />,
-        auth: authRoles.doctor,
+        auth: authRoles.allUser,
     },
     {
         path: '/chat',
         element: <Chat />,
-        auth: authRoles.doctor,
+        auth: authRoles.patient_doctor,
     },
     {
         path: '/video-chat',
         element: <VideoChat />,
-        auth: authRoles.doctor,
+        auth: authRoles.patient_doctor,
     },
     {
         path: '/users',
