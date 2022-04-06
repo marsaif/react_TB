@@ -66,6 +66,7 @@ export default function CustomizedTables() {
                 />
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DesktopDatePicker
+                        style={{ margin: '100px' }}
                         label="Date desktop"
                         inputFormat="MM/dd/yyyy"
                         value={value}
@@ -105,6 +106,9 @@ export default function CustomizedTables() {
                                 <StyledTableCell align="center">
                                     Date
                                 </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    Delete
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -118,6 +122,14 @@ export default function CustomizedTables() {
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
                                         22/02/2012
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        <Button
+                                            variant="contained"
+                                            style={{ color: 'red' }}
+                                        >
+                                            Delete
+                                        </Button>
                                     </StyledTableCell>
                                 </StyledTableRow>
                             ))}
