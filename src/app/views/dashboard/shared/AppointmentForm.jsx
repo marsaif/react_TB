@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
+import isWeekend from 'date-fns/isWeekend'
+import format from 'date-fns/format'
+
+import Stack from '@mui/material/Stack'
 import 'react-toastify/dist/ReactToastify.css'
 import { Slide, Zoom, Flip, Bounce } from 'react-toastify'
 
@@ -13,12 +17,37 @@ import {
     FormControl,
     Radio,
 } from '@mui/material'
-import { DatePicker, LocalizationProvider } from '@mui/lab'
+import { DateTimePicker, LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 export default function AppointmentForm(props) {
+    //open and close time
+    const openTime = [9, 0]
+    const closeTime = [16, 31]
+    const testNumber = /^[+0]{0,2}(91)?[0-9]{8}$/g
+    const testAge = /^100|[1-9]?\d$/g
+    //date error
+    const [errorDate, setErrorDate] = useState('')
+    const currentDateError = errorDate
+    const toShowDateError = Boolean(currentDateError)
+
+    //patient name error
+    // const [errorNom, setErrorNom] = useState('')
+    // const currentNomError = errorNom
+    // const toShowNomError = Boolean(currentNomError)
+
+    //patient number error
+    // const [errorNumber, setErrorNumber] = useState('')
+    // const currentNumberError = errorNumber
+    // const toShowNumberError = Boolean(currentNumberError)
+
+    //patient age error
+    // const [errorAge, setErrorAge] = useState('')
+    // const currentAgeError = errorAge
+    // const toShowAgeError = Boolean(currentAgeError)
+
     const navigate = useNavigate()
     const [appointmentData, setAppointmentData] = useState({
         DateAppointment: null,
@@ -82,7 +111,9 @@ export default function AppointmentForm(props) {
             >
                 <Grid item>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DatePicker
+                        <DateTimePicker
+                            clearable
+                            shouldDisableDate={isWeekend}
                             label="Date"
                             value={appointmentData.DateAppointment}
                             name="date"
@@ -91,7 +122,57 @@ export default function AppointmentForm(props) {
                                     DateAppointment: newValue,
                                 })
                             }}
-                            renderInput={(params) => <TextField {...params} />}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    error={toShowDateError}
+                                    helperText={
+                                        toShowDateError
+                                            ? currentDateError ??
+                                              params.helperText
+                                            : undefined
+                                    }
+                                    focused
+                                />
+                            )}
+                            minTime={new Date(0, 0, 0, ...openTime)}
+                            maxTime={new Date(0, 0, 0, ...closeTime)}
+                            // minDateTime={new Date()}
+                            minDate={new Date()}
+                            ampm={false}
+                            hideTabs={false}
+                            minutesStep={30}
+                            onError={(reason, value) => {
+                                switch (reason) {
+                                    case 'invalidDate':
+                                        setErrorDate('Invalid date format')
+                                        break
+                                    case 'minDate':
+                                        setErrorDate(
+                                            'Values in the past are not allowed'
+                                        )
+                                        break
+                                    case 'minTime':
+                                        setErrorDate(
+                                            "can't take appointment before 09.00"
+                                        )
+                                        break
+                                    case 'maxTime':
+                                        setErrorDate(
+                                            "can't take appointment after 16.30 "
+                                        )
+                                        break
+
+                                    case 'shouldDisableDate':
+                                        setErrorDate(
+                                            "can't make appointment at weeckends"
+                                        )
+                                        break
+
+                                    default:
+                                        setErrorDate('')
+                                }
+                            }}
                         />
                     </LocalizationProvider>
                 </Grid>
@@ -101,6 +182,7 @@ export default function AppointmentForm(props) {
                         variant="outlined"
                         name="patientName"
                         onChange={handleFieldChange}
+                        required
                     />
                 </Grid>
                 <Grid item>
@@ -114,6 +196,18 @@ export default function AppointmentForm(props) {
                         name="patientPhone"
                         onChange={handleFieldChange}
                         type="number"
+                        error={
+                            appointmentData.patientPhone < 20000000 ||
+                            appointmentData.patientPhone > 99999999
+                                ? true
+                                : false
+                        }
+                        helperText={
+                            appointmentData.patientPhone < 20000000 ||
+                            appointmentData.patientPhone > 99999999
+                                ? 'not a valid number'
+                                : ''
+                        }
                     />
                 </Grid>
 
@@ -155,6 +249,18 @@ export default function AppointmentForm(props) {
                         name="patientAge"
                         onChange={handleFieldChange}
                         type="number"
+                        error={
+                            appointmentData.patientAge < 0 ||
+                            appointmentData.patientAge > 120
+                                ? true
+                                : false
+                        }
+                        helperText={
+                            appointmentData.patientAge < 0 ||
+                            appointmentData.patientAge > 120
+                                ? 'not a valid age'
+                                : ''
+                        }
                     />
                 </Grid>
 
@@ -164,6 +270,13 @@ export default function AppointmentForm(props) {
                         variant="contained"
                         type="submit"
                         style={{ marginTop: '50%' }}
+                        disabled={
+                            toShowDateError ||
+                            appointmentData.patientAge < 0 ||
+                            appointmentData.patientAge > 120 ||
+                            appointmentData.patientPhone < 20000000 ||
+                            appointmentData.patientPhone > 99999999
+                        }
                     >
                         Save
                     </Button>
