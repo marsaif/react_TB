@@ -1,4 +1,5 @@
-import * as React from 'react'
+import React, { useState, useEffect } from 'react'
+
 import { styled } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -14,6 +15,8 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import Button from '@material-ui/core/Button'
 import Grid from '@mui/material/Grid'
 import { Link } from 'react-router-dom'
+import DeleteIcon from '@mui/icons-material/Delete'
+import axios from 'axios'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -38,24 +41,35 @@ function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein }
 }
 
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-]
-
 export default function CustomizedTables() {
-    const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'))
+    const [value, setValue] = useState(new Date('2014-08-18T21:11:54'))
 
     const handleChange = (newValue) => {
         setValue(newValue)
     }
+    const [appointments, setAppointments] = useState(null)
+
+    const deleteApp = (id) => {
+        axios.delete(`http://127.0.0.1:3001/appointments/${id}`).then((res) => {
+            setAppointments(
+                appointments.filter((appointment) => appointment._id != id)
+            )
+            // setAppointments(res.data)
+        })
+    }
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:3001/appointments').then((res) => {
+            setAppointments(res.data)
+            console.log(res.data)
+        })
+    }, [])
 
     return (
         <>
             <div>
+                <br />
+                <br />
                 <TextField
                     id="filled-basic"
                     label="Search"
@@ -92,50 +106,57 @@ export default function CustomizedTables() {
                         </Link>
                     </Grid>
                 </Grid>
-
-                <TableContainer component={Paper} sx={{ mx: 5 }}>
-                    <Table aria-label="customized table">
-                        <TableHead>
-                            <TableRow sx={{ mx: 1 }}>
-                                <StyledTableCell align="center">
-                                    Name
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                    Age
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                    Date
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                    Delete
-                                </StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row) => (
-                                <StyledTableRow key={row.name}>
+                {!appointments || appointments.length === 0 ? (
+                    <h1>there is no appointment</h1>
+                ) : (
+                    <TableContainer component={Paper} sx={{ mx: 5 }}>
+                        <Table aria-label="customized table">
+                            <TableHead>
+                                <TableRow sx={{ mx: 1 }}>
                                     <StyledTableCell align="center">
-                                        ali salah
+                                        Name
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
-                                        20
+                                        Number
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
-                                        22/02/2012
+                                        Date
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
-                                        <Button
-                                            variant="contained"
-                                            style={{ color: 'red' }}
-                                        >
-                                            Delete
-                                        </Button>
+                                        Delete
                                     </StyledTableCell>
-                                </StyledTableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {appointments.map((row) => (
+                                    <StyledTableRow key={row._id}>
+                                        <StyledTableCell align="center">
+                                            {row.patientName}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            {row.patientPhone}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            {row.DateAppointment.slice(0, 16)}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            <Button
+                                                variant="outlined"
+                                                startIcon={<DeleteIcon />}
+                                                color="secondary"
+                                                onClick={() =>
+                                                    deleteApp(row._id)
+                                                }
+                                            >
+                                                Delete
+                                            </Button>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
             </div>
         </>
     )
