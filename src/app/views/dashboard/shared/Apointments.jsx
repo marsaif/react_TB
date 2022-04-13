@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import { ToastContainer, toast } from 'react-toastify'
 import { styled } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -17,7 +17,9 @@ import Grid from '@mui/material/Grid'
 import { Link } from 'react-router-dom'
 import DeleteIcon from '@mui/icons-material/Delete'
 import axios from 'axios'
+import 'react-toastify/dist/ReactToastify.css'
 
+import { Slide, Zoom, Flip, Bounce } from 'react-toastify'
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.common.black,
@@ -44,6 +46,19 @@ function createData(name, calories, fat, carbs, protein) {
 export default function CustomizedTables() {
     const [value, setValue] = useState(new Date('2014-08-18T21:11:54'))
 
+    const notify = () => {
+        toast.error('appointment deleted 👌', {
+            position: 'top-center',
+            autoClose: 1300,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            draggablePercent: 60,
+        })
+    }
+
     const handleChange = (newValue) => {
         setValue(newValue)
     }
@@ -51,6 +66,7 @@ export default function CustomizedTables() {
 
     const deleteApp = (id) => {
         axios.delete(`http://127.0.0.1:3001/appointments/${id}`).then((res) => {
+            notify()
             setAppointments(
                 appointments.filter((appointment) => appointment._id != id)
             )
@@ -98,6 +114,7 @@ export default function CustomizedTables() {
                         display: 'flex',
                         justifyContent: 'flex-end',
                         marginBottom: '10px',
+                        maxHeight: 'fitContent',
                     }}
                 >
                     <Grid item>
@@ -107,7 +124,9 @@ export default function CustomizedTables() {
                     </Grid>
                 </Grid>
                 {!appointments || appointments.length === 0 ? (
-                    <h1>there is no appointment</h1>
+                    <h1 style={{ textAlign: 'center' }}>
+                        there is no appointment
+                    </h1>
                 ) : (
                     <TableContainer component={Paper} sx={{ mx: 5 }}>
                         <Table aria-label="customized table">
@@ -147,6 +166,7 @@ export default function CustomizedTables() {
                                                 onClick={() =>
                                                     deleteApp(row._id)
                                                 }
+                                                style={{ borderRadius: '10px' }}
                                             >
                                                 Delete
                                             </Button>
@@ -157,6 +177,20 @@ export default function CustomizedTables() {
                         </Table>
                     </TableContainer>
                 )}
+                <ToastContainer
+                    transition={Flip}
+                    position="top-center"
+                    autoClose={1600}
+                    hideProgressBar={false}
+                    newestOnTop
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    draggablePercent={60}
+                    limit={2}
+                />
             </div>
         </>
     )

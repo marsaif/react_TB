@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import isWeekend from 'date-fns/isWeekend'
 import format from 'date-fns/format'
-
+import './appointment.css'
 import Stack from '@mui/material/Stack'
 import 'react-toastify/dist/ReactToastify.css'
 import { Slide, Zoom, Flip, Bounce } from 'react-toastify'
@@ -59,17 +59,25 @@ export default function AppointmentForm(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-
-        axios
-            .post('http://127.0.0.1:3001/appointments', appointmentData)
-            .then(() => {
-                setTimeout(() => {
-                    navigate('/apointments')
-                }, 2800)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+        if (
+            appointmentData.DateAppointment ||
+            appointmentData.patientName ||
+            appointmentData.patientAge
+        ) {
+            axios
+                .post('http://127.0.0.1:3001/appointments', appointmentData)
+                .then(() => {
+                    notify()
+                    setTimeout(() => {
+                        navigate('/apointments')
+                    }, 2800)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        } else {
+            notifyerror()
+        }
     }
     const notify = () => {
         toast.success('appointment added 👌', {
@@ -80,6 +88,19 @@ export default function AppointmentForm(props) {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+            draggablePercent: 60,
+        })
+    }
+    const notifyerror = () => {
+        toast.error('all fields are required', {
+            position: 'top-center',
+            autoClose: 1800,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            draggablePercent: 60,
         })
     }
 
@@ -266,24 +287,17 @@ export default function AppointmentForm(props) {
 
                 <Grid item>
                     <Button
-                        onClick={notify}
                         variant="contained"
                         type="submit"
                         style={{ marginTop: '50%' }}
-                        disabled={
-                            toShowDateError ||
-                            appointmentData.patientAge < 0 ||
-                            appointmentData.patientAge > 120 ||
-                            appointmentData.patientPhone < 20000000 ||
-                            appointmentData.patientPhone > 99999999
-                        }
+                        disabled={toShowDateError}
                     >
                         Save
                     </Button>
                 </Grid>
             </Grid>
             <ToastContainer
-                transition={Flip}
+                transition={Slide}
                 position="top-right"
                 autoClose={2000}
                 hideProgressBar={false}
@@ -293,6 +307,7 @@ export default function AppointmentForm(props) {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
+                draggablePercent={60}
             />
         </Box>
     )
