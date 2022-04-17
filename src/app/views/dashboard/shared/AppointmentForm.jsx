@@ -60,17 +60,33 @@ export default function AppointmentForm(props) {
     const handleSubmit = (e) => {
         e.preventDefault()
         if (
-            appointmentData.DateAppointment ||
-            appointmentData.patientName ||
-            appointmentData.patientAge
+            appointmentData.DateAppointment &&
+            appointmentData.patientName &&
+            appointmentData.patientAge &&
+            appointmentData.patientPhone &&
+            appointmentData.gender
         ) {
+            // const appointDate = new Date(appointmentData.DateAppointment)
+            // appointDate.setSeconds(0)
+            // appointmentData.DateAppointment = appointDate.toString
+            // setAppointmentData(DateAppointment=appointDate.toDateString)
+            // appointmentData.DateAppointment.replaceAt(16, ':00.000+01:00')
+            const appData = appointmentData
             axios
                 .post('http://127.0.0.1:3001/appointments', appointmentData)
-                .then(() => {
-                    notify()
-                    setTimeout(() => {
-                        navigate('/apointments')
-                    }, 2800)
+                .then((res) => {
+                    if (res.status === 201) {
+                        console.log(res.data)
+                        notify()
+                        setTimeout(() => {
+                            navigate('/apointments')
+                        }, 2800)
+                    } else {
+                        notifyexisterror()
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 1200)
+                    }
                 })
                 .catch((err) => {
                     console.log(err)
@@ -103,12 +119,25 @@ export default function AppointmentForm(props) {
             draggablePercent: 60,
         })
     }
+    const notifyexisterror = () => {
+        toast.error("can't choose that date ", {
+            position: 'top-center',
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            draggablePercent: 60,
+        })
+    }
 
     const handleFieldChange = (e) => {
         setAppointmentData({
             ...appointmentData,
             [e.target.name]: e.target.value,
         })
+        console.log(appointmentData.DateAppointment)
     }
 
     return (
@@ -160,7 +189,8 @@ export default function AppointmentForm(props) {
                             maxTime={new Date(0, 0, 0, ...closeTime)}
                             // minDateTime={new Date()}
                             minDate={new Date()}
-                            ampm={false}
+                            ampm={true}
+                            ampmInClock
                             hideTabs={false}
                             minutesStep={30}
                             onError={(reason, value) => {
@@ -218,14 +248,18 @@ export default function AppointmentForm(props) {
                         onChange={handleFieldChange}
                         type="number"
                         error={
-                            appointmentData.patientPhone < 20000000 ||
-                            appointmentData.patientPhone > 99999999
+                            appointmentData.patientPhone !== null &&
+                            appointmentData.patientPhone !== '' &&
+                            (appointmentData.patientPhone < 20000000 ||
+                                appointmentData.patientPhone > 99999999)
                                 ? true
                                 : false
                         }
                         helperText={
-                            appointmentData.patientPhone < 20000000 ||
-                            appointmentData.patientPhone > 99999999
+                            appointmentData.patientPhone !== null &&
+                            appointmentData.patientPhone !== '' &&
+                            (appointmentData.patientPhone < 20000000 ||
+                                appointmentData.patientPhone > 99999999)
                                 ? 'not a valid number'
                                 : ''
                         }

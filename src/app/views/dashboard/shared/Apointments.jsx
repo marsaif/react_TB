@@ -47,7 +47,7 @@ export default function CustomizedTables() {
     const [value, setValue] = useState(new Date('2014-08-18T21:11:54'))
 
     const notify = () => {
-        toast.error('appointment deleted 👌', {
+        toast.error(' appointment deleted ', {
             position: 'top-center',
             autoClose: 1300,
             hideProgressBar: false,
