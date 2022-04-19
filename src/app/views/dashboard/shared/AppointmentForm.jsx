@@ -62,15 +62,24 @@ export default function AppointmentForm(props) {
         if (
             appointmentData.DateAppointment ||
             appointmentData.patientName ||
-            appointmentData.patientAge
-        ) {
+            appointmentData.patientAge || appointmentData.gender || appointmentData.patientPhone
+        ) { const appData = appointmentData
             axios
                 .post('http://127.0.0.1:3001/appointments', appointmentData)
-                .then(() => {
-                    notify()
-                    setTimeout(() => {
-                        navigate('/apointments')
-                    }, 2800)
+                .then((res) => {
+                    if(res.status === 201 ){
+                        notify()
+                        setTimeout(() => {
+                            navigate('/apointments')
+                        }, 2800)
+
+                    }else {
+                        notifyExistError()
+                        setTimeout(()=>{
+                            window.location.reload()
+                        },1200)
+                    }
+
                 })
                 .catch((err) => {
                     console.log(err)
@@ -95,6 +104,19 @@ export default function AppointmentForm(props) {
         toast.error('all fields are required', {
             position: 'top-center',
             autoClose: 1800,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            draggablePercent: 60,
+        })
+    }
+
+    const notifyExistError = () => {
+        toast.error('can\'t choose that date', {
+            position: 'top-center',
+            autoClose: 1000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -217,15 +239,15 @@ export default function AppointmentForm(props) {
                         name="patientPhone"
                         onChange={handleFieldChange}
                         type="number"
-                        error={
-                            appointmentData.patientPhone < 20000000 ||
-                            appointmentData.patientPhone > 99999999
-                                ? true
-                                : false
+                        error={appointmentData.patientPhone !== null && appointmentData.patientPhone !== '' &&
+                            (appointmentData.patientPhone < 20000000 ||
+                            appointmentData.patientPhone > 99999999)
+
                         }
                         helperText={
-                            appointmentData.patientPhone < 20000000 ||
-                            appointmentData.patientPhone > 99999999
+                            appointmentData.patientPhone !== null && appointmentData.patientPhone !== '' &&
+                            (appointmentData.patientPhone < 20000000 ||
+                                appointmentData.patientPhone > 99999999)
                                 ? 'not a valid number'
                                 : ''
                         }
@@ -273,8 +295,7 @@ export default function AppointmentForm(props) {
                         error={
                             appointmentData.patientAge < 0 ||
                             appointmentData.patientAge > 120
-                                ? true
-                                : false
+
                         }
                         helperText={
                             appointmentData.patientAge < 0 ||
