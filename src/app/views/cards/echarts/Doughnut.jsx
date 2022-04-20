@@ -1,9 +1,20 @@
 import React from 'react'
 import { useTheme } from '@mui/system'
 import ReactEcharts from 'echarts-for-react'
+import axios from 'axios'
+import { number } from 'yup/lib/locale'
 
 const DoughnutChart = ({ height, color = [] }) => {
     const theme = useTheme()
+    const [data, setData] = React.useState([]);
+
+    React.useEffect(() => {
+        axios.post("http://localhost:3001/users/statrole").then((res) => {
+            console.log(res.data)
+            setData(res.data)
+        })
+       
+    }, []);
 
     const option = {
         legend: {
@@ -80,14 +91,14 @@ const DoughnutChart = ({ height, color = [] }) => {
                 },
                 data: [
                     {
-                        value: 65,
+                        value: parseInt(data?.patients),
                         name: 'Patients',
                     },
                     {
-                        value: 20,
+                        value: parseInt(data?.doctors),
                         name: 'Doctors',
                     },
-                    { value: 15, name: 'Admins' },
+                    { value: parseInt(data?.admins), name: 'Admins' },
                 ],
                 itemStyle: {
                     emphasis: {

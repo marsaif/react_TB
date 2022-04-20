@@ -1,12 +1,13 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { Button, Card, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from '@mui/material';
+import { Button, Card, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, Divider, CardActions } from '@mui/material';
 import axios from 'axios';
 import { TextValidator } from 'react-material-ui-form-validator';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import { styled } from '@mui/system';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 
 
@@ -20,6 +21,51 @@ function Profile() {
     const [user, setUser] = React.useState({ sex: "man" })
 
 
+    const [photo, setPhoto] = React.useState(null);
+    const [status, setStatus] = React.useState(null);
+    const [imageUrl, setImageUrl] = React.useState(null);
+
+
+
+
+    React.useEffect(() => {
+        if (photo) {
+          setImageUrl(URL.createObjectURL(photo));
+        }
+      }, [photo]);
+    
+      const onSubmit = async () => {
+        if (photo) {
+          const formData = new FormData();
+          console.log(photo)
+          formData.append('photo', photo);
+          formData.append('id', user._id);
+          const genericErrorMessage = 'Something went wrong! Please try again later.';
+    
+          try {
+            const response = await fetch('http://localhost:3001/users/upload-photo', {
+              method: 'POST',
+              body: formData
+            });
+                    const data = await response.json();
+            if (response.status === 200) {
+              setStatus({ type: 'success', message: 'Image updated succesfully' });
+             setUser({
+                  ...user,
+                  image: `http://localhost:3001/${data}`
+                })
+              setPhoto(null);
+            } else {
+              setStatus({ type: 'error', message: data?.message || genericErrorMessage });
+            }
+          } catch (error) {
+            setStatus({ type: 'error', message: genericErrorMessage });
+            console.log(error)
+          }
+        }
+      };
+
+
 
     React.useEffect(() => {
         getUser()
@@ -27,7 +73,7 @@ function Profile() {
     }, [])
 
 
-
+console.log(user)
 
     const handleChange = ({ target: { name, value } }) => {
         setUser({
@@ -59,6 +105,7 @@ function Profile() {
         const accessToken = localStorage.getItem('accessToken')
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
         const response = await axios.get("http://localhost:3001/users/getUser");
+        response.data.user.image=  `http://localhost:3001/${response.data.user.image}`
         response.data.user.birthDate = getDate(response.data.user.birthDate)
         setUser(response.data.user)
 
@@ -83,14 +130,14 @@ function Profile() {
 
   
 
-    let { firstName, email, phone, birthDate, adress, sex, speciality, role } = user
+    let { firstName, email, phone, birthDate, adress, sex, speciality, role ,image } = user
 
     return (
-
+<>
         <Card className="card">
             <Grid container>
                 <Grid item lg={5} md={5} sm={5} xs={12}>
-                  
+                  <img src={image} width="300px" height="200px" style={{margin: 100}}></img>
                 </Grid>
                 <Grid item lg={7} md={7} sm={7} xs={12}>
                     <Box p={4} height="100%">
@@ -218,12 +265,48 @@ function Profile() {
 
 
                         </ValidatorForm>
+
+                        
                     </Box>
                 </Grid>
 
             </Grid>
         </Card>
+
+
+{imageUrl && photo && (
+    <Box
+      sx={{
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+      textAlign="center"
+    >
+      <div>New Image Preview:</div>
+      <img src={imageUrl} alt={photo.name} height="100px" />
+    </Box>
+  )}
+
+  <Divider />
+      <CardActions>
+        <Button fullWidth component="label">
+          Choose an image
+          <input
+            type="file"
+            hidden
+            accept=".png, .jpg, .jpeg"
+            name="photo"
+            onChange={(e) => setPhoto(e.target.files[0])}
+          />
+        </Button>
+        <Button color="primary" fullWidth variant="contained" disabled={!photo} onClick={onSubmit}>
+          Upload picture
+        </Button>
+      </CardActions>
+      </>
     );
+    
 }
 
 

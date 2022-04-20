@@ -18,6 +18,7 @@ import {
     Hidden,
 } from '@mui/material'
 import { topBarHeight } from 'app/utils/constant'
+import axios from 'axios'
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -87,7 +88,8 @@ const IconBox = styled('div')(({ theme }) => ({
 const Layout1Topbar = () => {
     const theme = useTheme()
     const { settings, updateSettings } = useSettings()
-    const { logout, user } = useAuth()
+    const {logout } = useAuth()
+    const [user, setUser] = React.useState()
     const isMdScreen = useMediaQuery(theme.breakpoints.down('md'))
 
     const updateSidebarMode = (sidebarSettings) => {
@@ -114,6 +116,21 @@ const Layout1Topbar = () => {
         }
         updateSidebarMode({ mode })
     }
+
+    const getUser = async () => {
+        const accessToken = localStorage.getItem('accessToken')
+        axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+        const response = await axios.get("http://localhost:3001/users/getUser");
+        response.data.user.image=  `http://localhost:3001/${response.data.user.image}`
+        setUser(response.data.user)
+
+
+    }
+    
+    React.useEffect(() => {
+        getUser()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <TopbarRoot>
@@ -148,11 +165,11 @@ const Layout1Topbar = () => {
                             <UserMenu>
                                 <Hidden xsDown>
                                     <Span>
-                                        Hi <strong>{user.name}</strong>
+                                         <strong>{user?.firstName}</strong>
                                     </Span>
                                 </Hidden>
                                 <Avatar
-                                    src={user.avatar}
+                                    src={user?.image}
                                     sx={{ cursor: 'pointer' }}
                                 />
                             </UserMenu>
