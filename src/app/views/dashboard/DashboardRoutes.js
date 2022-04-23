@@ -10,6 +10,10 @@ import AppointmentForm from './shared/AppointmentForm'
 const Analytics = Loadable(lazy(() => import('./Analytics')))
 const Users = Loadable(lazy(() => import('./shared/Users')))
 const Apointments = Loadable(lazy(() => import('./shared/Apointments')))
+const ListeReclamations = Loadable(lazy(() => import('./shared/ListeReclamations')))
+const AddReclamation = Loadable(lazy(() => import('./shared/AddReclamation')))
+
+
 const MedicalRecordForm = Loadable(
     lazy(() => import('./shared/MedicalRecordForm'))
 )
@@ -40,6 +44,18 @@ const dashboardRoutes = [
         path: '/users',
         element: <Users />,
         auth: authRoles.admin,
+    },
+    {
+        path: '/ListeReclamations',
+        element: <ListeReclamations />,
+        auth: authRoles.admin,
+
+    },
+    {
+        path: '/AddReclamation',
+        element: <AddReclamation />,
+        auth: authRoles.patient,
+
     },
     {
         path: '/stat',
