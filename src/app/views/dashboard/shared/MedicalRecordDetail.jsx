@@ -17,6 +17,8 @@ import AddIcon from '@mui/icons-material/Add';
 import NavigationIcon from '@mui/icons-material/Navigation';
 import Button from '@material-ui/core/Button';
 import { ToastContainer, toast } from 'react-toastify';
+import  MyDocument  from './pdfMedicalRecordFile';
+import { jsPDF } from "jspdf";
 
 export default function MedicalRecordDetail() {
 
@@ -96,9 +98,27 @@ export default function MedicalRecordDetail() {
       });
 
   };
+  const clickpdf = () => {
+            console.log(medRecord.familyHistory);
 
+    const doc = new jsPDF();
+    doc.setFont('Helvertica','bold')
+    doc.text('family History', 60, 60);
+    doc.text('Current Medical Conditions', 60, 80);
+    doc.text('Allergies Reactions to Treatment', 60, 100);
+    doc.text('current Medications', 60, 120);
 
-  const { title, medsList, price } = formData;
+    doc.setFont('Helvertica','Normal')
+
+    doc.text(medRecord.familyHistory, 150, 60);
+    doc.text(medRecord.CurrentMedicalConditions, 150, 80);
+    doc.text(medRecord.AllergiesReactionstoTreatment, 150, 100);
+    doc.text(medRecord.currentMedications, 150, 120);
+
+    doc.save("MedicalRecordDetail.pdf");
+
+  };
+
 
   return (
     <Box
@@ -264,8 +284,21 @@ export default function MedicalRecordDetail() {
             value={medRecord.AllergiesReactionstoTreatment || ""}
 
           />
+      
+  
 
         </Grid>
+        <Grid container spacing={1} style={{ display: 'flex', justifyContent: 'center' }}>
+        <Grid item >
+
+        <Button variant="contained" onClick={() => {
+            clickpdf();
+          }}>print pdf</Button>
+  
+        </Grid>
+
+
+      </Grid>
         <ToastContainer
           position="top-center"
           autoClose={5000}

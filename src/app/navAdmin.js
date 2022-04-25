@@ -14,5 +14,9 @@ export const navAdmin = [
         path: '/stat',
         icon: 'trending_up',
     },
- 
+    {
+        name: 'Reclamation List',
+        path: '/ListeReclamations',
+        icon: 'chat',
+    },
 ]
