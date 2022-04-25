@@ -9,98 +9,158 @@ import Select from '@mui/material/Select';
 import axios from 'axios';
 import { convertHexToRGB } from 'app/utils/utils'
 import Grid from '@mui/material/Grid';
+import { useState, useEffect } from "react";
 
 import { Card, Button } from '@mui/material'
 import { styled } from '@mui/system'
 import Paper from '@mui/material/Paper';
 import InputAdornment from '@mui/material/InputAdornment';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import Moment from 'moment';
+import Box from '@mui/material/Box';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import ChipInput from 'material-ui-chip-input'
 
 
+const CardRoot = styled(Card)(({ theme }) => ({
+    //  marginBottom: '24px',
+    margin: '30px',
+    boxShadow:
+        '-1px 1px 9px -2px rgba(0,0,0,0.95) !important',
+    padding: '24px !important',
+    [theme.breakpoints.down('sm')]: {
+        paddingLeft: '16px !important',
+    },
+}))
+
+const StyledCard = styled(Card)(({ theme }) => ({
+
+    textAlign: 'center',
+    position: 'relative',
+    boxShadow:
+        'none',
+    /*   background: `rgb(${convertHexToRGB(
+          theme.palette.primary.main
+      )}, 0.15) !important`, */
+    padding: '24px !important',
+    [theme.breakpoints.down('sm')]: {
+        padding: '16px !important',
+    },
+}))
+
+const Paragraph = styled('p')(({ theme }) => ({
+    margin: 0,
+    paddingTop: '24px',
+    paddingBottom: '24px',
+    color: theme.palette.text.secondary,
+}))
+
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+}));
 export default function AddReclamation() {
+
+    let lst = []
+
     const [role, setRole] = React.useState('');
     const [rows, setRows] = React.useState([]);
+    const [lstusers, setLstusers] = React.useState([lst]);
+    const [doctor, setDoctor] = React.useState('');
+    const [patient, setPatient] = useState([])
 
-    const CardRoot = styled(Card)(({ theme }) => ({
-        marginBottom: '24px',
-        padding: '24px !important',
-        [theme.breakpoints.down('sm')]: {
-            paddingLeft: '16px !important',
-        },
-    }))
-
-    const StyledCard = styled(Card)(({ theme }) => ({
-        boxShadow: 'none',
-        textAlign: 'center',
-        position: 'relative',
-        background: `rgb(${convertHexToRGB(
-            theme.palette.primary.main
-        )}, 0.15) !important`,
-        padding: '24px !important',
-        [theme.breakpoints.down('sm')]: {
-            padding: '16px !important',
-        },
-    }))
-
-    const Paragraph = styled('p')(({ theme }) => ({
-        margin: 0,
-        paddingTop: '24px',
-        paddingBottom: '24px',
-        color: theme.palette.text.secondary,
-    }))
-
-    const Item = styled(Paper)(({ theme }) => ({
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-        ...theme.typography.body2,
-        padding: theme.spacing(1),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    }));
-    
-    const acceptDoctor = async (id) => {
-
-
-        await axios.post("http://localhost:3001/users/accept-doctor", { id: id });
-        fetchData()
+    const sendReclamation = async () => {
+        console.log("wow")
     }
-    async function fetchData() {
+
+    useEffect(() => {
         const accessToken = localStorage.getItem('accessToken')
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-        const response = await axios.get("http://localhost:3001/users");
-        setRows(response.data)
-    }
-
-    React.useEffect(() => {
-
-        fetchData();
+        axios.get("http://localhost:3001/users/getUser").then((response) => {
+            setPatient(response.data.user._id)
+        })
     }, []);
 
 
 
- 
 
- 
-    const [age, setAge] = React.useState('');
+    React.useEffect(() => {
+        axios.get("http://localhost:3001/users/lstdoctors").then((res) => {
+
+            // lst = res.data
+            setLstusers(res.data)
+        })
+    }, []);
 
     const handleChange = (event) => {
-      setAge(event.target.value);
+        setDoctor(event.target.value);
+        console.log(event.target.value)
+    };
+
+    const [formData, setFormData] = useState({
+        details: "",
+        doctor: "",
+        patient: ""
+    });
+
+    const onChange = (e) => {
+
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const onSubmit = async (e) => {
+        formData.doctor = doctor
+        formData.patient = patient
+
+        e.preventDefault();
+        axios.post('http://localhost:3001/reclamations', {
+            data: formData,
+
+        })
+            .then(function (response) {
+
+                console.log(response);
+            })
+            .catch(function (error) {
+
+                console.log(error);
+            });
+
+
     };
 
     return (
-        <CardRoot   >
+
+        <CardRoot
+            component="form" onSubmit={onSubmit}
+            sx={{
+                '& .MuiTextField-root': { m: 1, width: '25ch' },
+                '& .demo-simple-select-label': { m: 1, width: '25ch' }
+            }}
+            noValidate
+            autoComplete="off"
+        >
+
             <StyledCard elevation={0} >
                 <img
                     src="https://cdn.iconscout.com/icon/premium/png-256-thumb/claims-2021941-1705361.png" width="100px"
                     alt="upgrade"
                 />
                 <Paragraph>
-                    If you have any problem please make a <b>claim</b>  
 
+                    <h3>  If you have any problem please make a <b>claim</b></h3>
                 </Paragraph>
 
 
-                <Grid container spacing={2}>
-                    <Grid item xs={4}>
+                <Grid container spacing={1} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Grid item xs={8} >
+
                         <TextField
                             id="input-with-icon-textfield"
                             label="TextField"
@@ -112,43 +172,63 @@ export default function AddReclamation() {
                                 ),
                             }}
                             variant="standard"
-                            
+
+
                         />
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Doctor Name</InputLabel>
+                </Grid>
+
+                <Grid container spacing={1} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Grid item xs={8} >
+
+                        <FormControl fullWidth style={{ marginTop: '0.8rem' }}>
+                            <InputLabel id="demo-simple-select-label"  >Doctor Name</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                // value={age} 
+                                value={doctor}
                                 label="Age"
                                 onChange={handleChange}
+
                             >
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                <MenuItem  >----</MenuItem>
+                                {lstusers.map((row) => (<MenuItem key={Math.random().toString(36).substr(2, 9)} value={row._id} >{row.firstName}</MenuItem>))}
                             </Select>
                         </FormControl>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <TextField
+                </Grid>
+                <Grid container spacing={1} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Grid item xs={8} >
+
+                        <TextField style={{ width: '100%' }}
+
+                            name="details"
                             id="outlined-multiline-static"
                             label="Details"
                             multiline
                             rows={4}
-                            fullWidth 
+                            onChange={(e) => onChange(e)}
+
                         />
+
                     </Grid>
 
 
                 </Grid>
-          
-                <Button variant="contained">Submit</Button>
+                <Grid container spacing={1} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Grid item >
 
+                        <Button style={{ marginTop: '0.8rem' }} variant="contained" type="submit">Send Claim</Button>
+
+                    </Grid>
+
+
+                </Grid>
             </StyledCard>
         </CardRoot>
+
+
     );
 }
