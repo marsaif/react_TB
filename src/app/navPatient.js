@@ -14,5 +14,10 @@ export const navPatient = [
         path: '/AddReclamation',
         icon: 'chat',
     },
+    {
+        name: 'My Reclamations',
+        path: '/ListeReclamationsPatient',
+        icon: 'chat',
+    },
  
 ]
