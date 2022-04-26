@@ -6,6 +6,7 @@ import Chat from './shared/Chat'
 import VideoChat from './shared/VideoChat'
 import Profile from '../sessions/profile/Profile'
 import AppointmentForm from './shared/AppointmentForm'
+import Video from './shared/Video'
 
 const Analytics = Loadable(lazy(() => import('./Analytics')))
 const Users = Loadable(lazy(() => import('./shared/Users')))
@@ -32,8 +33,13 @@ const dashboardRoutes = [
         auth: authRoles.patient_doctor,
     },
     {
-        path: '/video-chat',
+        path: '/video-chat/:partnerId/:myId',
         element: <VideoChat />,
+        auth: authRoles.patient_doctor,
+    },
+    {
+        path: '/accept-video/:partnerId/:myId',
+        element: <Video />,
         auth: authRoles.patient_doctor,
     },
     {
@@ -70,5 +76,4 @@ const dashboardRoutes = [
         element: <Profile />,
     },
 ]
-export default dashboardRoutes 
-  
+export default dashboardRoutes

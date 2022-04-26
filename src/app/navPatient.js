@@ -4,10 +4,4 @@ export const navPatient = [
         path: '/chat',
         icon: 'chat',
     },
-    {
-        name: 'Video Chat',
-        path: '/video-chat',
-        icon: 'chat',
-    },
- 
 ]

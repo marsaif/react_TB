@@ -163,7 +163,12 @@ function Chat() {
                                 <i
                                     className="material-icons"
                                     onClick={() =>
-                                        navigate('/video-chat/' + currentUser)
+                                        navigate(
+                                            '/video-chat/' +
+                                                currentUser +
+                                                '/' +
+                                                meUser._id
+                                        )
                                     }
                                 >
                                     ondemand_video
