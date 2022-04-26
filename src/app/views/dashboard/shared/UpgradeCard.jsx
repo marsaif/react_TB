@@ -1,4 +1,4 @@
-import {React,useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, Button } from '@mui/material'
 import { styled } from '@mui/system'
 import { convertHexToRGB } from 'app/utils/utils'
@@ -33,7 +33,25 @@ const Paragraph = styled('p')(({ theme }) => ({
     color: theme.palette.text.secondary,
 }))
 
+
+
+
 const UpgradeCard = () => {
+    const [meUser, setMeUser] = useState()
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken')
+        axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+        axios.get("http://localhost:3001/users/getUser").then((response) => {
+            setMeUser(response.data.user)
+
+        })
+    }, []);
+
+
+    console.log(meUser)
+
+    
     const [subs]=useState({
         name:"subscription to tbibi platform",
         price:20
@@ -41,7 +59,9 @@ const UpgradeCard = () => {
     const makePayment=token=>{
         const body={
             token,
-            subs
+            subs,
+            meUser
+
         }
         axios.post('http://localhost:3001/payments/create-checkout-session', {
             body:body
