@@ -76,7 +76,7 @@ const AuthContext = createContext({
     ...initialState,
     method: 'JWT',
     login: () => Promise.resolve(),
-    logout: () => { },
+    logout: () => {},
     register: () => Promise.resolve(),
 })
 
@@ -84,10 +84,13 @@ export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
     const login = async (email, password) => {
-        const response = await axios.post('http://localhost:3001/users/login', {
-            email,
-            password,
-        })
+        const response = await axios.post(
+            'https://tbibi.herokuapp.com/users/login',
+            {
+                email,
+                password,
+            }
+        )
         const { accessToken, user } = response.data
 
         setSession(accessToken)
@@ -100,8 +103,19 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
-    const register = async (email, firstName, password, confirm, phone, birthDate, adress, sex, role, speciality) => {
-        const response = await axios.post('http://localhost:3001/users', {
+    const register = async (
+        email,
+        firstName,
+        password,
+        confirm,
+        phone,
+        birthDate,
+        adress,
+        sex,
+        role,
+        speciality
+    ) => {
+        const response = await axios.post('https://tbibi.herokuapp.com/users', {
             email,
             firstName,
             password,
@@ -111,7 +125,7 @@ export const AuthProvider = ({ children }) => {
             adress,
             sex,
             role,
-            speciality
+            speciality,
         })
 
         console.log(response.status)
@@ -123,7 +137,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             try {
                 const accessToken = window.localStorage.getItem('accessToken')
 
@@ -131,9 +145,10 @@ export const AuthProvider = ({ children }) => {
                     setSession(accessToken)
 
                     axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-                    const response = await axios.get("http://localhost:3001/users/getUser");
+                    const response = await axios.get(
+                        'https://tbibi.herokuapp.com/users/getUser'
+                    )
                     const { user } = response.data
-
 
                     dispatch({
                         type: 'INIT',

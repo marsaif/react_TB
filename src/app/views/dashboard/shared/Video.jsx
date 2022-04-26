@@ -13,7 +13,17 @@ function Video() {
     const acceptCall = (stream) => {
         socket.current.emit('acceptCall', '')
 
-        const peer = new Peer({ initiator: false, stream: stream })
+        const peer = new Peer({
+            initiator: false,
+            stream: stream,
+            config: {
+                iceServers: [
+                    {
+                        urls: 'stun:stun.l.google.com:19302',
+                    },
+                ],
+            },
+        })
 
         socket.current.on('recieveSignal', (data) => {
             peer.signal(data)
@@ -29,7 +39,7 @@ function Video() {
         })
     }
     React.useEffect(() => {
-        socket.current = io.connect('http://localhost:3001')
+        socket.current = io.connect('https://tbibi.herokuapp.com')
 
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box,  styled, useTheme } from '@mui/system'
+import { Box, styled, useTheme } from '@mui/system'
 import { useNavigate } from 'react-router-dom'
 import { Paragraph, Span } from 'app/components/Typography'
 import { Card, Grid, Button } from '@mui/material'
@@ -44,7 +44,6 @@ const ForgotPassword = () => {
 
     const textError = palette.error.main
 
-
     const handleChange = ({ target: { name, value } }) => {
         setState({
             ...state,
@@ -53,15 +52,16 @@ const ForgotPassword = () => {
     }
 
     const handleFormSubmit = async (event) => {
-            try {
-                await axios.post('http://localhost:3001/users/resetpassword',{email:email})
-                navigate('/check-email')
-            } catch (e) {
-                setMessage("uesr not found")
-            }
+        try {
+            await axios.post(
+                'https://tbibi.herokuapp.com/users/resetpassword',
+                { email: email }
+            )
+            navigate('/check-email')
+        } catch (e) {
+            setMessage('uesr not found')
         }
-        
-    
+    }
 
     let { email } = state
 
@@ -112,7 +112,9 @@ const ForgotPassword = () => {
                                     <Span sx={{ mr: 1, ml: '16px' }}>or</Span>
                                     <Button
                                         sx={{ textTransform: 'capitalize' }}
-                                        onClick={() => navigate("/session/signin")}
+                                        onClick={() =>
+                                            navigate('/session/signin')
+                                        }
                                     >
                                         Sign in
                                     </Button>

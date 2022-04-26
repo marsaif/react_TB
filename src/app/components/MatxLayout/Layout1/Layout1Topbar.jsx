@@ -147,8 +147,10 @@ const Layout1Topbar = () => {
     const getUser = async () => {
         const accessToken = localStorage.getItem('accessToken')
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-        const response = await axios.get('http://localhost:3001/users/getUser')
-        response.data.user.image = `http://localhost:3001/${response.data.user.image}`
+        const response = await axios.get(
+            'https://tbibi.herokuapp.com/users/getUser'
+        )
+        response.data.user.image = `https://tbibi.herokuapp.com/${response.data.user.image}`
         setUser(response.data.user)
     }
 
@@ -165,7 +167,7 @@ const Layout1Topbar = () => {
         //handleClickOpen(true)
 
         getUser()
-        socket.current = io.connect('http://localhost:3001')
+        socket.current = io.connect('https://tbibi.herokuapp.com')
 
         socket.current.on('hey', (data) => {
             if (user?._id === data.to) {

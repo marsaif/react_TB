@@ -4,7 +4,7 @@ import io from 'socket.io-client'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
-const socket = io.connect('http://localhost:3001')
+const socket = io.connect('https://tbibi.herokuapp.com')
 socket.emit('join_room', 'chat')
 
 function Chat() {
@@ -19,7 +19,9 @@ function Chat() {
     const getUser = async () => {
         const accessToken = localStorage.getItem('accessToken')
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-        const response = await axios.get('http://localhost:3001/users/getUser')
+        const response = await axios.get(
+            'https://tbibi.herokuapp.com/users/getUser'
+        )
         setMeUser(response.data.user)
     }
 
@@ -49,7 +51,7 @@ function Chat() {
         const accessToken = localStorage.getItem('accessToken')
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
         const response = await axios.get(
-            'http://localhost:3001/conversation/lastconv'
+            'https://tbibi.herokuapp.com/conversation/lastconv'
         )
         setLastConversations(response.data.result)
         console.log(response.data.result)
@@ -80,7 +82,7 @@ function Chat() {
         const accessToken = localStorage.getItem('accessToken')
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
         const response = await axios.get(
-            'http://localhost:3001/conversation/conv/' + val
+            'https://tbibi.herokuapp.com/conversation/conv/' + val
         )
         setMessageList(response.data.conversation.messages)
     }

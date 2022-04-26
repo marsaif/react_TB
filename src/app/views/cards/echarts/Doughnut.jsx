@@ -6,15 +6,14 @@ import { number } from 'yup/lib/locale'
 
 const DoughnutChart = ({ height, color = [] }) => {
     const theme = useTheme()
-    const [data, setData] = React.useState([]);
+    const [data, setData] = React.useState([])
 
     React.useEffect(() => {
-        axios.post("http://localhost:3001/users/statrole").then((res) => {
+        axios.post('https://tbibi.herokuapp.com/users/statrole').then((res) => {
             console.log(res.data)
             setData(res.data)
         })
-       
-    }, []);
+    }, [])
 
     const option = {
         legend: {

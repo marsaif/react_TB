@@ -14,6 +14,13 @@ export default function VideoChat() {
             initiator: true,
             trickle: false,
             stream: stream,
+            config: {
+                iceServers: [
+                    {
+                        urls: 'stun:stun.l.google.com:19302',
+                    },
+                ],
+            },
         })
 
         peer.on('signal', (data) => {
@@ -37,7 +44,7 @@ export default function VideoChat() {
     }
 
     useEffect(() => {
-        socket.current = io.connect('http://localhost:3001')
+        socket.current = io.connect('https://tbibi.herokuapp.com')
 
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })
