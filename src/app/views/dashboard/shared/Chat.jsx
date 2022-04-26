@@ -4,7 +4,7 @@ import io from 'socket.io-client'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
-const socket = io.connect('http://localhost:3002')
+const socket = io.connect('http://localhost:3001')
 socket.emit('join_room', 'chat')
 
 function Chat() {

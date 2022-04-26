@@ -29,7 +29,7 @@ function Video() {
         })
     }
     React.useEffect(() => {
-        socket.current = io.connect('http://localhost:3002')
+        socket.current = io.connect('http://localhost:3001')
 
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })

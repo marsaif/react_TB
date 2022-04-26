@@ -145,7 +145,7 @@ const Layout1Topbar = () => {
     }
     React.useEffect(() => {
         getUser()
-        socket.current = io.connect('http://localhost:3002')
+        socket.current = io.connect('http://localhost:3001')
 
         socket.current.on('hey', (data) => {
             if (user?._id === data.to) {
