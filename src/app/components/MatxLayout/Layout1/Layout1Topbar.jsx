@@ -9,6 +9,13 @@ import ShoppingCart from '../../ShoppingCart/ShoppingCart'
 import NotificationBar from '../../NotificationBar/NotificationBar'
 import { themeShadows } from 'app/components/MatxTheme/themeColors'
 import { NotificationProvider } from 'app/contexts/NotificationContext'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+
 import {
     Icon,
     IconButton,
@@ -101,6 +108,16 @@ const Layout1Topbar = () => {
     const [partnerId, setpartnerId] = React.useState('')
     const [playing, setPlaying] = React.useState(false)
     const navigate = useNavigate()
+    const [open, setOpen] = React.useState(false)
+
+    const handleClickOpen = () => {
+        setReceivingCall(false)
+        setOpen(true)
+    }
+
+    const handleClose = () => {
+        setOpen(false)
+    }
 
     const updateSidebarMode = (sidebarSettings) => {
         updateSettings({
@@ -141,9 +158,12 @@ const Layout1Topbar = () => {
 
     const acceptCall = () => {
         setReceivingCall(false)
+        setOpen(false)
         navigate(`/accept-video/${partnerId}/${user._id}`)
     }
     React.useEffect(() => {
+        //handleClickOpen(true)
+
         getUser()
         socket.current = io.connect('http://localhost:3001')
 
@@ -153,6 +173,7 @@ const Layout1Topbar = () => {
                 setReceivingCall(true)
                 setpartnerId(data.from)
                 setCaller(data.name)
+                handleClickOpen(true)
             }
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,18 +181,41 @@ const Layout1Topbar = () => {
 
     return (
         <TopbarRoot>
-            {receivingCall ? (
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {'Someone is Calling You?'}
+                </DialogTitle>
+                <DialogActions>
+                    <Button variant="contained" onClick={handleClose}>
+                        Disagree
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={acceptCall}
+                    >
+                        Agree
+                    </Button>
+                </DialogActions>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {caller} is calling you
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog>
+            {receivingCall && (
                 <div>
                     <ReactHowler
                         autoPlay
                         playing={playing}
                         src="https://assets.mixkit.co/sfx/download/mixkit-marimba-waiting-ringtone-1360.wav"
                     />
-                    <h1>{caller} is calling you</h1>
-                    <button onClick={acceptCall}>Accept</button>
                 </div>
-            ) : (
-                ''
             )}
             <TopbarContainer>
                 <Box display="flex">

@@ -35,7 +35,9 @@ function Video() {
             .getUserMedia({ video: true, audio: true })
             .then((stream) => {
                 acceptCall(stream)
-                userVideo.current.srcObject = stream
+                if (userVideo.current) {
+                    userVideo.current.srcObject = stream
+                }
             })
     }, [])
 

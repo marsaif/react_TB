@@ -7,7 +7,6 @@ export default function VideoChat() {
     const userVideo = useRef()
     const partnerVideo = useRef()
     const socket = useRef()
-    const [signal, setSignal] = useState()
     const { partnerId, myId } = useParams()
 
     const callPeer = (stream) => {
@@ -44,7 +43,9 @@ export default function VideoChat() {
             .getUserMedia({ video: true, audio: true })
             .then((stream) => {
                 callPeer(stream)
-                userVideo.current.srcObject = stream
+                if (userVideo.current) {
+                    userVideo.current.srcObject = stream
+                }
             })
     }, [])
 
