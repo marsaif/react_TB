@@ -2,8 +2,8 @@ import React from 'react'
 import { Grid, Card, Icon, IconButton, Tooltip } from '@mui/material'
 import { Box, styled } from '@mui/system'
 import { Small } from 'app/components/Typography'
-import axios from 'axios';
-import { useState, useEffect } from "react";
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 
 const StyledCard = styled(Card)(({ theme }) => ({
     display: 'flex',
@@ -39,23 +39,21 @@ const Heading = styled('h6')(({ theme }) => ({
     color: theme.palette.primary.main,
 }))
 
-
-let balance;
-
+let balance
 
 export default function StatCards() {
-    const [balance, setBalance] = useState();
+    const [balance, setBalance] = useState()
 
     useEffect(() => {
         // Update the document title using the browser API
-        axios.get("http://localhost:3001/payments/soldecomptebancaire").then((res) => {
-            console.log(res.data)
-           setBalance(res.data)
-       // balance=res.data    
-    })
-    
-      }, []);
-    
+        axios
+            .get('https://tbibi.herokuapp.com/payments/soldecomptebancaire')
+            .then((res) => {
+                console.log(res.data)
+                setBalance(res.data)
+                // balance=res.data
+            })
+    }, [])
 
     return (
         <Grid container spacing={3} sx={{ mb: '24px' }}>
@@ -93,9 +91,6 @@ export default function StatCards() {
                     </Tooltip>
                 </StyledCard>
             </Grid>
-
         </Grid>
     )
-
-
 }

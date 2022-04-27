@@ -1,14 +1,9 @@
-import {
-    Card,
-    Grid,
-    Button,
-    
-} from '@mui/material'
+import { Card, Grid, Button } from '@mui/material'
 import React, { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Box, styled, useTheme } from '@mui/system'
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
-import { Paragraph, } from 'app/components/Typography'
+import { Paragraph } from 'app/components/Typography'
 import axios from 'axios'
 
 const FlexBox = styled(Box)(() => ({
@@ -41,8 +36,6 @@ const JWTRoot = styled(JustifyBox)(() => ({
     },
 }))
 
-
-
 const ChangePassword = () => {
     const navigate = useNavigate()
     const [userInfo, setUserInfo] = useState({
@@ -63,34 +56,34 @@ const ChangePassword = () => {
     const { palette } = useTheme()
     const textError = palette.error.main
 
-
     const handleFormSubmit = async (event) => {
-
         if (userInfo.password !== userInfo.confirmPassword) {
-            setMessage("Password and Confirm Password must be the same")
+            setMessage('Password and Confirm Password must be the same')
+        } else {
+            await axios.post(
+                'https://tbibi.herokuapp.com/users/update-password',
+                { id: id, password: userInfo.password }
+            )
+            navigate('/session/signin')
         }
-        else {
-            await axios.post("http://localhost:3001/users/update-password", { id: id, password: userInfo.password })
-            navigate("/session/signin")
-        }
-
     }
-    
+
     React.useEffect(() => {
         const getUserId = async () => {
             try {
-                const data = await axios.post("http://localhost:3001/users/verify-resetpassword", { resetpassword: resetpassword })
+                const data = await axios.post(
+                    'https://tbibi.herokuapp.com/users/verify-resetpassword',
+                    { resetpassword: resetpassword }
+                )
                 setId(data.data.id)
             } catch (error) {
-                navigate("/session/404")
+                navigate('/session/404')
             }
-
-
         }
         getUserId()
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [])
 
     return (
         <JWTRoot>
@@ -117,9 +110,7 @@ const ChangePassword = () => {
                                     name="password"
                                     value={userInfo.password}
                                     validators={['required']}
-                                    errorMessages={[
-                                        'this field is required',
-                                    ]}
+                                    errorMessages={['this field is required']}
                                 />
                                 <TextValidator
                                     sx={{ mb: '12px', width: '100%' }}
@@ -134,13 +125,11 @@ const ChangePassword = () => {
                                     errorMessages={['this field is required']}
                                 />
 
-
                                 {message && (
                                     <Paragraph sx={{ color: textError }}>
                                         {message}
                                     </Paragraph>
                                 )}
-
 
                                 <FlexBox>
                                     <Button
@@ -151,7 +140,6 @@ const ChangePassword = () => {
                                     >
                                         Change
                                     </Button>
-
                                 </FlexBox>
                             </ValidatorForm>
                         </ContentBox>
@@ -163,4 +151,3 @@ const ChangePassword = () => {
 }
 
 export default ChangePassword
-

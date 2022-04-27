@@ -1,25 +1,27 @@
 import React from 'react'
 import { useTheme } from '@mui/system'
 import ReactEcharts from 'echarts-for-react'
-import axios from 'axios';
-import { useState, useEffect } from "react";
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 
 const DoughnutChart = ({ height, color = [] }) => {
-    const [lstpremuim, setLstpremuim] = useState([]);
-    const [lstnonpremuim, setLstnonpremuim] = useState([]);
+    const [lstpremuim, setLstpremuim] = useState([])
+    const [lstnonpremuim, setLstnonpremuim] = useState([])
 
     useEffect(() => {
-        axios.get("http://localhost:3001/payments/nonpremuimstats").then((res) => {
-            console.log(res.data)
-            setLstnonpremuim(res.data)
-        })
-        axios.get("http://localhost:3001/payments/premuimstats").then((res) => {
-            console.log(res.data)
-            setLstpremuim(res.data)
-
-        })
-    }, []);
-
+        axios
+            .get('https://tbibi.herokuapp.com/payments/nonpremuimstats')
+            .then((res) => {
+                console.log(res.data)
+                setLstnonpremuim(res.data)
+            })
+        axios
+            .get('https://tbibi.herokuapp.com/payments/premuimstats')
+            .then((res) => {
+                console.log(res.data)
+                setLstpremuim(res.data)
+            })
+    }, [])
 
     const theme = useTheme()
 

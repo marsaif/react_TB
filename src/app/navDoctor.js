@@ -15,9 +15,4 @@ export const navDoctor = [
         path: '/chat',
         icon: 'chat',
     },
-    {
-        name: 'Video Chat',
-        path: '/video-chat',
-        icon: 'chat',
-    },
 ]

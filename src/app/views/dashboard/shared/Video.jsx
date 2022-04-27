@@ -1,18 +1,20 @@
-import { useState, useEffect, useRef } from 'react'
+import React from 'react'
+import { useParams } from 'react-router-dom'
 import io from 'socket.io-client'
 import Peer from 'simple-peer'
-import { useParams } from 'react-router-dom'
 
-export default function VideoChat() {
-    const userVideo = useRef()
-    const partnerVideo = useRef()
-    const socket = useRef()
+function Video() {
     const { partnerId, myId } = useParams()
 
-    const callPeer = (stream) => {
+    const userVideo = React.useRef()
+    const partnerVideo = React.useRef()
+    const socket = React.useRef()
+
+    const acceptCall = (stream) => {
+        socket.current.emit('acceptCall', '')
+
         const peer = new Peer({
-            initiator: true,
-            trickle: false,
+            initiator: false,
             stream: stream,
             config: {
                 iceServers: [
@@ -23,33 +25,26 @@ export default function VideoChat() {
             },
         })
 
-        peer.on('signal', (data) => {
-            socket.current.on('callAccepted', (s) => {
-                socket.current.emit('sendSignal', {
-                    signal: data,
-                })
-            })
-        })
-        socket.current.emit('callUser', {
-            userToCall: partnerId,
-            from: myId,
-        })
-
-        socket.current.on('receiveResponseSignal', (data) => {
+        socket.current.on('recieveSignal', (data) => {
             peer.signal(data)
         })
-        peer.on('stream', (stream) => {
-            partnerVideo.current.srcObject = stream
+
+        peer.on('signal', (sig) => {
+            socket.current.emit('sendResponseSignal', {
+                signal: sig,
+            })
+        })
+        peer.on('stream', (str) => {
+            partnerVideo.current.srcObject = str
         })
     }
-
-    useEffect(() => {
+    React.useEffect(() => {
         socket.current = io.connect('https://tbibi.herokuapp.com')
 
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })
             .then((stream) => {
-                callPeer(stream)
+                acceptCall(stream)
                 if (userVideo.current) {
                     userVideo.current.srcObject = stream
                 }
@@ -63,3 +58,5 @@ export default function VideoChat() {
         </div>
     )
 }
+
+export default Video
