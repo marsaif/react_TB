@@ -1,116 +1,135 @@
-import * as React from 'react'
-import { DataGrid } from '@mui/x-data-grid'
-import { TextField } from '@mui/material'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import axios from 'axios'
-import { Button } from '@mui/material'
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import { red } from '@mui/material/colors';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import axios from 'axios';
+import Grid from '@mui/material/Grid';
+import Moment from 'moment';
+import MarkEmailReadRoundedIcon from '@mui/icons-material/MarkEmailReadRounded';
+const ExpandMore = styled((props) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
 
 export default function ListeReclamations() {
-    const [role, setRole] = React.useState('')
-    const [rows, setRows] = React.useState([])
+  let lst = []
+  const [expanded, setExpanded] = React.useState(false);
+  const [reclamations, setReclamations] = React.useState([]);
 
-    const acceptDoctor = async (id) => {
-        await axios.post('https://tbibi.herokuapp.com/users/accept-doctor', {
-            id: id,
-        })
-        fetchData()
-    }
-    const renderDetailsButton = (params) => {
-        return (
-            <strong>
-                {!params.row.accepted && params.row.role === 'DOCTOR' ? (
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        style={{ marginLeft: 16 }}
-                        onClick={() => {
-                            acceptDoctor(params.row._id)
-                        }}
-                    >
-                        accept
-                    </Button>
-                ) : (
-                    ''
-                )}
-            </strong>
-        )
-    }
 
-    const columns = [
-        { field: 'firstName', headerName: 'First name', width: 130 },
-        { field: 'lastName', headerName: 'Last Name', width: 130 },
-        {
-            field: 'email',
-            headerName: 'Email',
-            sortable: false,
-            width: 160,
-        },
-        { field: 'phone', headerName: 'Phone', width: 130 },
-        { field: 'role', headerName: 'Role', width: 130 },
-        { field: 'birthDate', headerName: 'BirthDate', width: 130 },
-        { field: 'sex', headerName: 'Sex', width: 130 },
-        { field: 'adress', headerName: 'Adress', width: 130 },
-        {
-            field: 'action',
-            headerName: 'Action',
-            width: 150,
-            renderCell: renderDetailsButton,
-        },
-    ]
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
 
-    async function fetchData() {
-        const accessToken = localStorage.getItem('accessToken')
-        axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-        const response = await axios.get('https://tbibi.herokuapp.com/users')
-        setRows(response.data)
-    }
+  const fetchreclamation = (data) => {
+    axios.get("http://localhost:3001/reclamations").then((res) => {
+      lst = res.data
+      console.log(res.data)
 
-    React.useEffect(() => {
-        fetchData()
-    }, [])
+      setReclamations(res.data)
+    })
+  }
 
-    const handleChange = (event) => {
-        setRole(event.target.value)
-    }
+  React.useEffect(() => {
+    fetchreclamation()
+  }, []);
 
-    return (
-        <>
-            <TextField
-                id="filled-basic"
-                label="Search"
-                variant="outlined"
-                sx={{ m: 5 }}
-                style={{ width: '80%', textAlign: 'center' }}
-                placeholder="Search"
+  const handleClick = (data) => {
+    console.log(data)
+    axios.put("http://localhost:3001/reclamations/" + data._id).then((res) => {
+      fetchreclamation()
+
+      console.log(res)
+
+    })
+
+
+  };
+  return (
+    <Grid container spacing={2}>
+      {reclamations.map((row) => (
+
+        <Grid item xs={4} key={Math.random().toString(36).substr(2, 9)}>
+
+
+          <Card sx={{ maxWidth: 345 }} >
+            <CardHeader
+              avatar={
+                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                  R
+                </Avatar>
+              }
+              action={
+                <IconButton aria-label="settings" onClick={() => { handleClick(row); }}>
+                  <MarkEmailReadRoundedIcon />
+                </IconButton>
+              }
+              title={row.patient.firstName}
+              subheader={Moment(row.date).format('d MMM YYYY')}
             />
-            <FormControl sx={{ my: 5 }} style={{ width: '10%' }}>
-                <InputLabel id="demo-simple-select-label">role</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={role}
-                    label="Age"
-                    onChange={handleChange}
-                >
-                    <MenuItem value={10}>Admin</MenuItem>
-                    <MenuItem value={20}>Patient</MenuItem>
-                    <MenuItem value={30}>Doctor</MenuItem>
-                </Select>
-            </FormControl>
-            <div style={{ height: 400, width: '99%' }}>
-                <DataGrid
-                    sx={{ mx: 4 }}
-                    rows={rows}
-                    getRowId={(row) => row._id}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                />
-            </div>
-        </>
-    )
+
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+
+                About Doctor : {row.doctor.firstName} <br />
+                Doctor's email : {row.doctor.email} <br />
+                Description : {row.description}
+              </Typography>
+            </CardContent>
+
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+              <CardContent>
+                <Typography paragraph>Method:</Typography>
+                <Typography paragraph>
+                  Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
+                  aside for 10 minutes.
+                </Typography>
+                <Typography paragraph>
+                  Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
+                  medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
+                  occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
+                  large plate and set aside, leaving chicken and chorizo in the pan. Add
+                  pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
+                  stirring often until thickened and fragrant, about 10 minutes. Add
+                  saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
+                </Typography>
+                <Typography paragraph>
+                  Add rice and stir very gently to distribute. Top with artichokes and
+                  peppers, and cook without stirring, until most of the liquid is absorbed,
+                  15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
+                  mussels, tucking them down into the rice, and cook again without
+                  stirring, until mussels have opened and rice is just tender, 5 to 7
+                  minutes more. (Discard any mussels that don&apos;t open.)
+                </Typography>
+                <Typography>
+                  Set aside off of the heat to let rest for 10 minutes, and then serve.
+                </Typography>
+              </CardContent>
+            </Collapse>
+          </Card>
+
+        </Grid>
+      ))}
+    </Grid>
+
+
+  );
 }
