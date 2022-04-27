@@ -23,6 +23,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
+import { TextField } from '@mui/material';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -53,13 +54,15 @@ export default function PatientReclamations() {
     const [reclamations, setReclamations] = React.useState([]);
     const [patient, setPatient] = React.useState();
     const [doctor, setDoctor] = React.useState();
+    const [selectedRow, setSelectedRow] = React.useState();
+    const [selectedId, setSelectedId] = React.useState();
+    const [input, setInput] = React.useState();
+
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
+
+
     const handleClose = () => setOpen(false);
 
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
 
     React.useEffect(() => {
         fetchreclamation()
@@ -96,14 +99,25 @@ export default function PatientReclamations() {
 
         })
     };
-    const handleUpdateClick = (data) => {
-        console.log(data)
-        axios.delete("http://localhost:3001/reclamations/" + data._id).then((res) => {
+
+    const handleOpen = (row) => {
+        console.log(row)
+        setSelectedRow(row.description)
+        setSelectedId(row._id)
+        setOpen(true);
+    }
+
+
+    const handleUpdateClick = () => {
+        console.log(input)
+        axios.put("http://localhost:3001/reclamations/updateReclamationDescription/"+selectedId,{
+            description: input,
+           
+        } ).then((res) => {
             fetchreclamation()
-
-        })
+            setOpen(false)
+        }) 
     };
-
 
     return (
         <Grid container spacing={2}>
@@ -154,13 +168,27 @@ export default function PatientReclamations() {
                                             aria-describedby="modal-modal-description"
                                         >
                                             <Box sx={style}>
-                                                <Typography id="modal-modal-title" variant="h6" component="h2">
-                                                    Text in a modal
+                                                <Typography id="modal-modal-title" variant="h6" component="h4">
+                                                    Update Details :
                                                 </Typography>
-                                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                                    Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                                                </Typography>
+                                                <TextField style={{ width: '100%' }}
+
+                                                    name="details"
+                                                    id="outlined-multiline-static"
+                                                    label="Details"
+                                                    multiline
+                                                    rows={4}
+                                                    onInput={e => setInput(e.target.value)}
+                                                 
+                                                />
+
+
+
+                                                <Button variant="contained" style={{ marginTop: '20px' }} onClick={() => { handleUpdateClick(); }} type="submit">Update</Button>
+
                                             </Box>
+
+
                                         </Modal>
                                     </CardActions>
                                 </Card>

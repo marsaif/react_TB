@@ -83,7 +83,7 @@ export default function AddReclamation() {
         const accessToken = localStorage.getItem('accessToken')
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
         axios.get("http://localhost:3001/users/getUser").then((response) => {
-            setPatient(response.data.user._id)
+            setPatient(response.data.user)
         })
     }, []);
 
@@ -162,9 +162,11 @@ export default function AddReclamation() {
                     <Grid item xs={8} >
 
                         <TextField
+                       
                             id="input-with-icon-textfield"
                             label="TextField"
                             InputProps={{
+                                readOnly: true,
                                 startAdornment: (
                                     <InputAdornment position="start">
                                         <AccountCircle />
@@ -172,7 +174,7 @@ export default function AddReclamation() {
                                 ),
                             }}
                             variant="standard"
-
+                            value={patient.firstName || ""}
 
                         />
                     </Grid>
