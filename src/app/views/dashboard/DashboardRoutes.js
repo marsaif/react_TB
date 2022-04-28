@@ -6,6 +6,8 @@ import Chat from './shared/Chat'
 import VideoChat from './shared/VideoChat'
 import Profile from '../sessions/profile/Profile'
 import AppointmentForm from './shared/AppointmentForm'
+import Campaigns from "./shared/Campaigns";
+import RowCards from "./shared/RowCards";
 
 const Analytics = Loadable(lazy(() => import('./Analytics')))
 const Users = Loadable(lazy(() => import('./shared/Users')))
@@ -48,10 +50,12 @@ const dashboardRoutes = [
     {
         path: '/apointments',
         element: <Apointments />,
+        auth:authRoles.doctor
     },
     {
         path: '/apointments/add',
         element: <AppointmentForm />,
+        auth:authRoles.doctor
     },
     {
         path: '/medicalrecord/:idpatient',
@@ -69,6 +73,10 @@ const dashboardRoutes = [
         path: '/profile',
         element: <Profile />,
     },
+    {
+        path: '/home',
+        element: <Campaigns />,
+    }
 ]
 export default dashboardRoutes 
   

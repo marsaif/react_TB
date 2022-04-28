@@ -1,3 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
 .css-1jl4go3-MuiToolbar-root {
     display: none;
 }
+h2{
+    font-family: 'Poppins',sans-serif;
+    position: relative;
+    font-size: 2vw;
+    color:#252839 ;
+    -webkit-text-stroke: 0.1vw #383d52;
+    text-transform:uppercase ;
+}
+
+/*h2::before{*/
+/*    content: attr(dataText);*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 0;*/
+/*    height: 100%;*/
+/*    color: #01fe87;*/
+/*    -webkit-text-stroke: 0vw #383d52;*/
+/*    border-right: 2px solid #01fe87;*/
+/*    overflow: hidden;*/
+/*    animation: animate 5s linear infinite;*/
+/*}*/
+
+/*@keyframes animate {*/
+/*    0%,10%,100%{*/
+/*        width: 0;*/
+/*    }*/
+/*    50%,60%{*/
+/*        width: 100%;*/
+/*    }*/
+
+/*}*/

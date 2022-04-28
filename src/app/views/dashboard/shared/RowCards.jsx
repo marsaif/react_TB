@@ -1,118 +1,422 @@
-import { format } from 'date-fns'
-import React, { Fragment } from 'react'
-import { Span } from 'app/components/Typography'
-import { Box, styled, useTheme } from '@mui/system'
-import {
-    Grid,
-    Card,
-    Icon,
-    IconButton,
-    Checkbox,
-    Fab,
-    Avatar,
-    Hidden,
-} from '@mui/material'
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import { alpha } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Checkbox from '@mui/material/Checkbox';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { visuallyHidden } from '@mui/utils';
+import {useEffect, useState} from "react";
+import axios from "../../../../axios";
 
-const ProjectName = styled(Span)(({ theme }) => ({
-    marginLeft: 24,
-    fontWeight: '500',
-    [theme.breakpoints.down('sm')]: {
-        marginLeft: 4,
-    },
-}))
+// function createData(patientName, patientEmail, patientPhone, patientAge, dateAppointment) {
+// 	return {
+// 		name,
+// 		calories,
+// 		fat,
+// 		carbs,
+// 		protein,
+// 	};
+// }
 
-const StarOutline = styled(Fab)(() => ({
-    marginLeft: 0,
-    boxShadow: 'none',
-    background: '#08ad6c !important',
-    backgroundColor: 'rgba(9, 182, 109, 1) !important',
-}))
+// const rows = [
+// 	createData('Cupcake', 305, 3.7, 67, 4.3),
+// 	createData('Donut', 452, 25.0, 51, 4.9),
+// 	createData('Eclair', 262, 16.0, 24, 6.0),
+// 	createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+// 	createData('Gingerbread', 356, 16.0, 49, 3.9),
+// 	createData('Honeycomb', 408, 3.2, 87, 6.5),
+// 	createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+// 	createData('Jelly Bean', 375, 0.0, 94, 0.0),
+// 	createData('KitKat', 518, 26.0, 65, 7.0),
+// 	createData('Lollipop', 392, 0.2, 98, 0.0),
+// 	createData('Marshmallow', 318, 0, 81, 2.0),
+// 	createData('Nougat', 360, 19.0, 9, 37.0),
+// 	createData('Oreo', 437, 18.0, 63, 4.0),
+// ];
 
-const DateRange = styled(Fab)(({ theme }) => ({
-    marginLeft: 0,
-    boxShadow: 'none',
-    color: 'white !important',
-    background: `${theme.palette.error.main} !important`,
-}))
-
-const StyledAvatar = styled(Avatar)(() => ({
-    width: '32px !important',
-    height: '32px !important',
-}))
-
-
-const RowCards = () => {
-    const { palette } = useTheme()
-    const textMuted = palette.text.secondary
-
-    return [1, 2, 3, 4].map((id) => (
-        <Fragment key={id}>
-            <Card
-                sx={{ py: 1, px: 2, }}
-                className="project-card"
-            >
-                <Grid container alignItems="center">
-                    <Grid item md={5} xs={7}>
-                        <Box display="flex" alignItems="center">
-                            <Checkbox />
-                            <Hidden smDown>
-                                {id % 2 === 1 ? (
-                                    <StarOutline size="small">
-                                        <Icon>star_outline</Icon>
-                                    </StarOutline>
-                                ) : (
-                                    <DateRange size="small">
-                                        <Icon>date_range</Icon>
-                                    </DateRange>
-                                )}
-                            </Hidden>
-                            <ProjectName>
-                                Project {id}
-                            </ProjectName>
-                        </Box>
-                    </Grid>
-
-                    <Grid item md={3} xs={4}>
-                        <Box color={textMuted}>
-                            {format(new Date().getTime(), 'MM/dd/yyyy hh:mma')}
-                        </Box>
-                    </Grid>
-
-                    <Hidden smDown>
-                        <Grid item xs={3}>
-                            <Box
-                                display="flex"
-                                position="relative"
-                                marginLeft='-0.875rem !important'
-                            >
-                                <StyledAvatar
-                                    src="/assets/images/face-4.jpg"
-                                />
-                                <StyledAvatar
-                                    src="/assets/images/face-4.jpg"
-                                />
-                                <StyledAvatar
-                                    src="/assets/images/face-4.jpg"
-                                />
-                                <StyledAvatar sx={{ fontSize: '14px' }}>
-                                    +3
-                                </StyledAvatar>
-                            </Box>
-                        </Grid>
-                    </Hidden>
-
-                    <Grid item xs={1}>
-                        <Box display="flex" justifyContent="flex-end">
-                            <IconButton>
-                                <Icon>more_vert</Icon>
-                            </IconButton>
-                        </Box>
-                    </Grid>
-                </Grid>
-            </Card>
-            <Box py={1} />
-        </Fragment>
-    ))
+function descendingComparator(a, b, orderBy) {
+	if (b[orderBy] < a[orderBy]) {
+		return -1;
+	}
+	if (b[orderBy] > a[orderBy]) {
+		return 1;
+	}
+	return 0;
 }
 
-export default RowCards
+function getComparator(order, orderBy) {
+	return order === 'desc'
+		? (a, b) => descendingComparator(a, b, orderBy)
+		: (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+// This method is created for cross-browser compatibility, if you don't
+// need to support IE11, you can use Array.prototype.sort() directly
+function stableSort(array, comparator) {
+	const stabilizedThis = array.map((el, index) => [el, index]);
+	stabilizedThis.sort((a, b) => {
+		const order = comparator(a[0], b[0]);
+		if (order !== 0) {
+			return order;
+		}
+		return a[1] - b[1];
+	});
+	return stabilizedThis.map((el) => el[0]);
+}
+
+const headCells = [
+	{
+		id: 'patientName',
+		numeric: false,
+		disablePadding: true,
+		label: 'name',
+	},
+	{
+		id: 'patientPhone',
+		numeric: true,
+		disablePadding: false,
+		label: 'phone',
+	},
+	{
+		id: 'patientAge',
+		numeric: true,
+		disablePadding: false,
+		label: 'age',
+	},
+	{
+		id: 'DateAppointment',
+		numeric: false,
+		disablePadding: false,
+		label: 'date',
+	},
+];
+
+function EnhancedTableHead(props) {
+	const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+		props;
+	const createSortHandler = (property) => (event) => {
+		onRequestSort(event, property);
+	};
+
+	return (
+		<TableHead>
+			<TableRow>
+				<TableCell padding="checkbox">
+					<Checkbox
+						color="primary"
+						indeterminate={numSelected > 0 && numSelected < rowCount}
+						checked={rowCount > 0 && numSelected === rowCount}
+						onChange={onSelectAllClick}
+						inputProps={{
+							'aria-label': 'select all desserts',
+						}}
+					/>
+				</TableCell>
+				{headCells.map((headCell) => (
+					<TableCell
+						key={headCell.id}
+						align={headCell.numeric ? 'right' : 'left'}
+						padding={headCell.disablePadding ? 'none' : 'normal'}
+						sortDirection={orderBy === headCell.id ? order : false}
+					>
+						<TableSortLabel
+							active={orderBy === headCell.id}
+							direction={orderBy === headCell.id ? order : 'asc'}
+							onClick={createSortHandler(headCell.id)}
+						>
+							{headCell.label}
+							{orderBy === headCell.id ? (
+								<Box component="span" sx={visuallyHidden}>
+									{order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+								</Box>
+							) : null}
+						</TableSortLabel>
+					</TableCell>
+				))}
+			</TableRow>
+		</TableHead>
+	);
+}
+
+EnhancedTableHead.propTypes = {
+	numSelected: PropTypes.number.isRequired,
+	onRequestSort: PropTypes.func.isRequired,
+	onSelectAllClick: PropTypes.func.isRequired,
+	order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+	orderBy: PropTypes.string.isRequired,
+	rowCount: PropTypes.number.isRequired,
+};
+
+const EnhancedTableToolbar = (props) => {
+	const { numSelected } = props;
+
+	return (
+		<Toolbar
+			sx={{
+				pl: { sm: 2 },
+				pr: { xs: 1, sm: 1 },
+				...(numSelected > 0 && {
+					bgcolor: (theme) =>
+						alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+				}),
+			}}
+		>
+			{numSelected > 0 ? (
+				<Typography
+					sx={{ flex: '1 1 100%' }}
+					color="inherit"
+					variant="subtitle1"
+					component="div"
+				>
+					{numSelected} selected
+				</Typography>
+			) : (
+				<Typography
+					sx={{ flex: '1 1 100%' }}
+					variant="h6"
+					id="tableTitle"
+					component="div"
+				>
+					Appointments
+				</Typography>
+			)}
+
+			{numSelected > 0 ? (
+				<Tooltip title="Delete">
+					<IconButton>
+						<DeleteIcon />
+					</IconButton>
+				</Tooltip>
+			) : (
+				<Tooltip title="Filter list">
+					<IconButton>
+						<FilterListIcon />
+					</IconButton>
+				</Tooltip>
+			)}
+		</Toolbar>
+	);
+};
+
+EnhancedTableToolbar.propTypes = {
+	numSelected: PropTypes.number.isRequired,
+};
+
+export default function RowCards() {
+	const [order, setOrder] = React.useState('asc');
+	const [orderBy, setOrderBy] = React.useState('calories');
+	const [selected, setSelected] = React.useState([]);
+	const [page, setPage] = React.useState(0);
+	const [dense, setDense] = React.useState(false);
+	const [rowsPerPage, setRowsPerPage] = React.useState(5);
+	const [rows,setRows]=useState('')
+	useEffect(() => {
+		axios.get('http://127.0.0.1:3001/appointments').then((res) => {
+			res.data.forEach((element) => {
+				element.id = element._id
+			});
+			setRows(res.data);
+
+		});
+	}, []);
+
+	const handleRequestSort = (event, property) => {
+		const isAsc = orderBy === property && order === 'asc';
+		setOrder(isAsc ? 'desc' : 'asc');
+		setOrderBy(property);
+	};
+
+	const handleSelectAllClick = (event) => {
+		if (event.target.checked) {
+			const newSelecteds = rows.map((n) => n.patientName);
+			setSelected(newSelecteds);
+			return;
+		}
+		setSelected([]);
+	};
+
+	const handleClick = (event, name) => {
+		const selectedIndex = selected.indexOf(name);
+		let newSelected = [];
+
+		if (selectedIndex === -1) {
+			newSelected = newSelected.concat(selected, name);
+		} else if (selectedIndex === 0) {
+			newSelected = newSelected.concat(selected.slice(1));
+		} else if (selectedIndex === selected.length - 1) {
+			newSelected = newSelected.concat(selected.slice(0, -1));
+		} else if (selectedIndex > 0) {
+			newSelected = newSelected.concat(
+				selected.slice(0, selectedIndex),
+				selected.slice(selectedIndex + 1),
+			);
+		}
+
+		setSelected(newSelected);
+	};
+
+	const handleChangePage = (event, newPage) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
+
+	const handleChangeDense = (event) => {
+		setDense(event.target.checked);
+	};
+
+	const isSelected = (name) => selected.indexOf(name) !== -1;
+
+	// Avoid a layout jump when reaching the last page with empty rows.
+	const emptyRows =
+		page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+	return (
+		<Box sx={{ width: '100%' }}>
+			<Paper sx={{ width: '100%', mb: 2 }}>
+				<EnhancedTableToolbar numSelected={selected.length} />
+				<TableContainer>
+					<Table
+						sx={{ minWidth: 750 }}
+						aria-labelledby="tableTitle"
+						size={dense ? 'small' : 'medium'}
+					>
+						<EnhancedTableHead
+							numSelected={selected.length}
+							order={order}
+							orderBy={orderBy}
+							onSelectAllClick={handleSelectAllClick}
+							onRequestSort={handleRequestSort}
+							rowCount={rows.length}
+						/>
+						<TableBody>
+							{/* if you don't need to support IE11, you can replace the `stableSort` call with:
+                 rows.slice().sort(getComparator(order, orderBy)) */}
+							{stableSort(rows, getComparator(order, orderBy))
+								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+								.map((row, index) => {
+									const isItemSelected = isSelected(row.patientName);
+									const labelId = `enhanced-table-checkbox-${index}`;
+
+									return (
+										<TableRow
+											hover
+											onClick={(event) => handleClick(event, row.patientName)}
+											role="checkbox"
+											aria-checked={isItemSelected}
+											tabIndex={-1}
+											key={row.patientName}
+											selected={isItemSelected}
+										>
+											<TableCell padding="checkbox">
+												<Checkbox
+													color="primary"
+													checked={isItemSelected}
+													inputProps={{
+														'aria-labelledby': labelId,
+													}}
+												/>
+											</TableCell>
+											<TableCell
+												component="th"
+												id={labelId}
+												scope="row"
+												padding="none"
+											>
+												{row.patientName}
+											</TableCell>
+											<TableCell align="right">patient email</TableCell>
+											<TableCell align="right">{row.patientPhone}</TableCell>
+											<TableCell align="right">{row.patientAge}</TableCell>
+											<TableCell align="right">{row.DateAppointment}</TableCell>
+										</TableRow>
+									);
+								})}
+							{emptyRows > 0 && (
+								<TableRow
+									style={{
+										height: (dense ? 33 : 53) * emptyRows,
+									}}
+								>
+									<TableCell colSpan={6} />
+								</TableRow>
+							)}
+						</TableBody>
+					</Table>
+				</TableContainer>
+				<TablePagination
+					rowsPerPageOptions={[5, 10, 25]}
+					component="div"
+					count={rows.length}
+					rowsPerPage={rowsPerPage}
+					page={page}
+					onPageChange={handleChangePage}
+					onRowsPerPageChange={handleChangeRowsPerPage}
+				/>
+			</Paper>
+			<FormControlLabel
+				control={<Switch checked={dense} onChange={handleChangeDense} />}
+				label="Dense padding"
+			/>
+		</Box>
+	);
+}
+
+// import React, { useState, useEffect } from 'react'
+// import { DataGrid } from '@mui/x-data-grid'
+// import axios from "../../../../axios";
+//
+// const columns = [
+// 	{ field: '_id', headerName: 'ID' ,width: 400},
+// 	{ field: 'patientName', headerName: 'name', width: 300 },
+// 	{ field: 'patientAge', headerName: 'Body', width: 200 }
+// ]
+//
+// const RowCards = () => {
+//
+// 	const [tableData, setTableData] = useState([])
+//
+//
+// 	useEffect(() => {
+// 		axios.get('http://127.0.0.1:3001/appointments').then((res) => {
+// 			res.data.forEach((element) => {
+// 				element.id = element._id
+// 			});
+// 			setTableData(res.data);
+//
+// 		});
+// 	}, []);
+//
+// 	console.log('table data',tableData)
+//
+// 	return (
+// 		<div style={{ height: 400, width: '80%' }}>
+// 			<DataGrid
+// 				rows={tableData}
+// 				columns={columns}
+// 				pageSize={5}
+// 			/>
+// 		</div>
+// 	)
+// }
+//
+// export default RowCards
