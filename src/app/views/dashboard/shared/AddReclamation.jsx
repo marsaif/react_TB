@@ -23,6 +23,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import ChipInput from 'material-ui-chip-input'
+import { ToastContainer, toast } from 'react-toastify';
 
 
 const CardRoot = styled(Card)(({ theme }) => ({
@@ -69,8 +70,6 @@ export default function AddReclamation() {
 
     let lst = []
 
-    const [role, setRole] = React.useState('');
-    const [rows, setRows] = React.useState([]);
     const [lstusers, setLstusers] = React.useState([lst]);
     const [doctor, setDoctor] = React.useState('');
     const [patient, setPatient] = useState([])
@@ -123,7 +122,9 @@ export default function AddReclamation() {
             data: formData,
 
         })
+
             .then(function (response) {
+                toast("Reclamation added successfully")
 
                 console.log(response);
             })
@@ -131,7 +132,8 @@ export default function AddReclamation() {
 
                 console.log(error);
             });
-
+        toast("Reclamation added successfully")
+        setDoctor("");
 
     };
 
@@ -162,7 +164,7 @@ export default function AddReclamation() {
                     <Grid item xs={8} >
 
                         <TextField
-                       
+
                             id="input-with-icon-textfield"
                             label="TextField"
                             InputProps={{
@@ -229,6 +231,17 @@ export default function AddReclamation() {
 
                 </Grid>
             </StyledCard>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </CardRoot>
 
 
