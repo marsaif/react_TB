@@ -5,9 +5,9 @@ import { MatxVerticalNav } from 'app/components'
 import useSettings from 'app/hooks/useSettings'
 import { styled } from '@mui/system'
 import axios from 'axios'
-import {navAdmin} from 'app/navAdmin'
-import {navDoctor} from 'app/navDoctor'
-
+import { navAdmin } from 'app/navAdmin'
+import { navDoctor } from 'app/navDoctor'
+import { navPatient } from 'app/navPatient'
 
 const StyledScrollBar = styled(Scrollbar)(() => ({
     paddingLeft: '1rem',
@@ -33,7 +33,6 @@ const Sidenav = ({ children }) => {
     const { settings, updateSettings } = useSettings()
     const [user, setUser] = React.useState()
 
-
     const updateSidebarMode = (sidebarSettings) => {
         let activeLayoutSettingsName = settings.activeLayout + 'Settings'
         let activeLayoutSettings = settings[activeLayoutSettingsName]
@@ -54,27 +53,29 @@ const Sidenav = ({ children }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-
     const getUser = async () => {
         const accessToken = localStorage.getItem('accessToken')
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-        const response = await axios.get("http://localhost:3001/users/getUser");
+        const response = await axios.get(
+            'https://tbibi.herokuapp.com/users/getUser'
+        )
         setUser(response.data.user)
-
-
     }
 
     return (
         <Fragment>
             <StyledScrollBar options={{ suppressScrollX: true }}>
                 {children}
-                
-                {(user?.role === "ADMIN") ?
-                    <MatxVerticalNav items={navAdmin} /> :
-                    (user?.role === "DOCTOR") ?
-                        <MatxVerticalNav items={navDoctor} /> :
-                        <MatxVerticalNav items={navigations} />}
 
+                {user?.role === 'ADMIN' ? (
+                    <MatxVerticalNav items={navAdmin} />
+                ) : user?.role === 'DOCTOR' ? (
+                    <MatxVerticalNav items={navDoctor} />
+                ) : user?.role === 'PATIENT' ? (
+                    <MatxVerticalNav items={navPatient} />
+                ) : (
+                    <MatxVerticalNav items={navigations} />
+                )}
             </StyledScrollBar>
 
             <SideNavMobile
