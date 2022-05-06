@@ -11,11 +11,15 @@ import Video from './shared/Video'
 const Analytics = Loadable(lazy(() => import('./Analytics')))
 const Users = Loadable(lazy(() => import('./shared/Users')))
 const Apointments = Loadable(lazy(() => import('./shared/Apointments')))
-const ListeReclamations = Loadable(lazy(() => import('./shared/ListeReclamations')))
-const ListeReclamationsPatient = Loadable(lazy(() => import('./shared/PatientReclamations')))
+const ListeReclamations = Loadable(
+    lazy(() => import('./shared/ListeReclamations'))
+)
+const ListeReclamationsPatient = Loadable(
+    lazy(() => import('./shared/PatientReclamations'))
+)
 
 const AddReclamation = Loadable(lazy(() => import('./shared/AddReclamation')))
-
+const Symptoms = Loadable(lazy(() => import('./shared/Symptoms')))
 
 const MedicalRecordForm = Loadable(
     lazy(() => import('./shared/MedicalRecordForm'))
@@ -49,6 +53,11 @@ const dashboardRoutes = [
         auth: authRoles.patient_doctor,
     },
     {
+        path: '/symptoms',
+        element: <Symptoms />,
+        auth: authRoles.patient_doctor,
+    },
+    {
         path: '/users',
         element: <Users />,
         auth: authRoles.admin,
@@ -57,19 +66,16 @@ const dashboardRoutes = [
         path: '/ListeReclamations',
         element: <ListeReclamations />,
         auth: authRoles.admin,
-
     },
     {
         path: '/ListeReclamationsPatient',
         element: <ListeReclamationsPatient />,
         auth: authRoles.patient,
-
     },
     {
         path: '/AddReclamation',
         element: <AddReclamation />,
         auth: authRoles.patient,
-
     },
     {
         path: '/stat',
