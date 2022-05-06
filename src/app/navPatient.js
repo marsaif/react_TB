@@ -14,5 +14,10 @@ export const navPatient = [
         path: '/ListeReclamationsPatient',
         icon: 'chat',
     },
+    {
+        name: 'list  of doctors',
+        path: '/ListeDoctors',
+        icon: 'chat',
+    },
  
 ]

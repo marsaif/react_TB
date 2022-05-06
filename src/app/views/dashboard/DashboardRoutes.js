@@ -13,6 +13,7 @@ const Users = Loadable(lazy(() => import('./shared/Users')))
 const Apointments = Loadable(lazy(() => import('./shared/Apointments')))
 const ListeReclamations = Loadable(lazy(() => import('./shared/ListeReclamations')))
 const ListeReclamationsPatient = Loadable(lazy(() => import('./shared/PatientReclamations')))
+const ListeDoctors = Loadable(lazy(()=> import('./shared/ListeDoctors')))
 
 const AddReclamation = Loadable(lazy(() => import('./shared/AddReclamation')))
 
@@ -62,6 +63,12 @@ const dashboardRoutes = [
     {
         path: '/ListeReclamationsPatient',
         element: <ListeReclamationsPatient />,
+        auth: authRoles.patient,
+
+    },
+    {
+        path: '/ListeDoctors',
+        element: <ListeDoctors />,
         auth: authRoles.patient,
 
     },
