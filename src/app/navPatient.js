@@ -19,5 +19,9 @@ export const navPatient = [
         path: '/symptoms',
         icon: 'person',
     },
-    
+    {
+        name: 'home',
+        path: '/home',
+        icon: 'home',
+    },
 ]

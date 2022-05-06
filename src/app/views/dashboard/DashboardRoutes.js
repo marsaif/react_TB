@@ -7,7 +7,7 @@ import VideoChat from './shared/VideoChat'
 import Profile from '../sessions/profile/Profile'
 import AppointmentForm from './shared/AppointmentForm'
 import Video from './shared/Video'
-
+import Campaigns from './shared/Campaigns'
 const Analytics = Loadable(lazy(() => import('./Analytics')))
 const Users = Loadable(lazy(() => import('./shared/Users')))
 const Apointments = Loadable(lazy(() => import('./shared/Apointments')))
@@ -110,6 +110,10 @@ const dashboardRoutes = [
     {
         path: '/profile',
         element: <Profile />,
+    },
+    {
+        path: '/home',
+        element: <Campaigns />,
     },
 ]
 export default dashboardRoutes
