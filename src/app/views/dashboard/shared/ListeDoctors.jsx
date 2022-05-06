@@ -48,19 +48,13 @@ export default function ListDoctors() {
                 variant="body2"
                 color="text.primary"
               >
-                {row.Adress}
-                <br/>
-              </Typography>
-              <Typography
-                sx={{ display: 'inline' }}
-                component="span"
-                variant="body2"
-                color="text.primary"
-              >
               {row.telephone}
                 <br/>
               </Typography>
-              {row.Map}
+              <a href={row.Map}>
+                {row.Adress}
+              </a>
+              
             </React.Fragment>
           }
         />
