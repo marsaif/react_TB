@@ -212,8 +212,12 @@ export default function Symptoms() {
     }
     return (
         <Root>
-            <div {...getRootProps()}>
+            <div
+                style={{ marginTop: 100, marginLeft: 350 }}
+                {...getRootProps()}
+            >
                 <InputWrapper
+                    sx={{ width: 800 }}
                     ref={setAnchorEl}
                     className={focused ? 'focused' : ''}
                 >
@@ -228,7 +232,10 @@ export default function Symptoms() {
                 </InputWrapper>
             </div>
             {groupedOptions.length > 0 ? (
-                <Listbox {...getListboxProps()}>
+                <Listbox
+                    {...getListboxProps()}
+                    style={{ marginTop: 100, marginLeft: 350 }}
+                >
                     {groupedOptions.map((option, index) => (
                         <li {...getOptionProps({ option, index })}>
                             <span>{option.Name}</span>
@@ -238,14 +245,29 @@ export default function Symptoms() {
                 </Listbox>
             ) : null}
 
-            <Button variant="contained" onClick={getSelectedSymptoms}>
+            <Button
+                variant="contained"
+                sx={{ width: 800 }}
+                style={{ marginTop: 10, marginLeft: 350 }}
+                onClick={getSelectedSymptoms}
+            >
                 Search
             </Button>
 
             {specialities.map((speciality) => (
-                <div>
-                    {speciality.Name}
-                    {speciality.Accuracy}
+                <div style={{ marginTop: 15, marginLeft: 350 }}>
+                    <h3>
+                        Speciality : {speciality.Name} Accuracy :{' '}
+                        {speciality.Accuracy}
+                        <Button
+                            style={{ marginLeft: 50 }}
+                            variant="contained"
+                            color="success"
+                            size="small"
+                        >
+                            Check Doctors
+                        </Button>
+                    </h3>
                 </div>
             ))}
         </Root>
