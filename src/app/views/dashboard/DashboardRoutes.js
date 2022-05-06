@@ -74,7 +74,7 @@ const dashboardRoutes = [
         auth: authRoles.patient,
     },
     {
-        path: '/ListeDoctors',
+        path: '/ListeDoctors/:sp',
         element: <ListeDoctors />,
         auth: authRoles.patient,
     },
