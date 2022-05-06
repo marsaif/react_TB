@@ -7,6 +7,7 @@ import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
 
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 const Root = styled('div')(
     ({ theme }) => `
   color: ${
@@ -162,6 +163,7 @@ const Listbox = styled('ul')(
 )
 
 export default function Symptoms() {
+    const navigate = useNavigate()
     const [symptoms, setSymptoms] = React.useState([])
     const [specialities, setSpecialities] = React.useState([])
     const getSymptoms = async () => {
@@ -172,7 +174,9 @@ export default function Symptoms() {
     React.useEffect(() => {
         getSymptoms()
     }, [])
-
+    const moveToDoctors = (doctorName) => {
+        navigate('/ListeDoctors/' + doctorName)
+    }
     const {
         getRootProps,
         getInputProps,
@@ -264,6 +268,7 @@ export default function Symptoms() {
                             variant="contained"
                             color="success"
                             size="small"
+                            onClick={() => moveToDoctors(speciality.Name)}
                         >
                             Check Doctors
                         </Button>
