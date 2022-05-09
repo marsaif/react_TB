@@ -10,7 +10,7 @@ export const navAdmin = [
         icon: 'person',
     },
     {
-        name: 'Static',
+        name: 'Stats',
         path: '/stat',
         icon: 'trending_up',
     },
