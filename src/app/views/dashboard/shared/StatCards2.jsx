@@ -74,7 +74,7 @@ const StatCards2 = () => {
                         <H3 textcolor={'#08ad6c'}>New Users</H3>
                     </ContentBox>
                     <ContentBox sx={{ pt: 2 }}>
-                        <H1>100</H1>
+                        <H1>2</H1>
                         <IconBox sx={{ background: 'rgba(9, 182, 109, 0.15)' }}>
                             <Icon className="icon">expand_less</Icon>
                         </IconBox>

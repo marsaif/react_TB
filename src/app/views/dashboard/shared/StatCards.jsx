@@ -63,7 +63,7 @@ export default function StatCards() {
                         <Icon className="icon">group</Icon>
                         <Box ml="12px">
                             <Small>All Users</Small>
-                            <Heading>3050</Heading>
+                            <Heading>50</Heading>
                         </Box>
                     </ContentBox>
                     <Tooltip title="View Details" placement="top">
