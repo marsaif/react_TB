@@ -8,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+// import { Auth } from 'aws-amplify'
 import {
     FormControl,
     FormControlLabel,
@@ -34,9 +35,10 @@ import Fade from '@mui/material/Fade'
 import InputAdornment from '@mui/material/InputAdornment'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 
-import { DateTimePicker, LocalizationProvider } from '@mui/lab'
+import { Alert, DateTimePicker, LocalizationProvider } from '@mui/lab'
 import SendIcon from '@mui/icons-material/Send'
 import isWeekend from 'date-fns/isWeekend'
+// import * as Parse from '@auth0/auth0-spa-js'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -71,6 +73,17 @@ const style = {
 }
 
 export default function CustomizedTables() {
+    const [errors, setErrors] = useState(null)
+    const [loadings, setLoadings] = useState(true)
+    const [usernames, setUsernames] = useState('')
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:3001/users/getUser').then((res) => {
+            console.log('user connected:', res.data.user.role)
+            setUsernames(res.data.user.role)
+        })
+    }, [])
+
     const openTime = [9, 0]
     const closeTime = [16, 31]
     const testNumber = /^[+0]{0,2}(91)?[0-9]{8}$/gi
@@ -298,11 +311,15 @@ export default function CustomizedTables() {
                         maxHeight: 'fitContent',
                     }}
                 >
-                    <Grid item>
-                        <Link to="add">
-                            <Button variant="contained">add appointment</Button>
-                        </Link>
-                    </Grid>
+                    {usernames && usernames === 'DOCTOR' ? (
+                        <Grid item>
+                            <Link to="add">
+                                <Button variant="contained">
+                                    add appointment
+                                </Button>
+                            </Link>
+                        </Grid>
+                    ) : null}
                 </Grid>
                 {!appointments || appointments.length === 0 ? (
                     <Grid
