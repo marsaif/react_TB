@@ -73,7 +73,7 @@ const JwtLogin = () => {
         setLoading(true)
         try {
             await login(userInfo.email, userInfo.password)
-            navigate('/')
+            navigate('/profile')
         } catch (e) {
             console.log(e)
             setMessage(e.message)
