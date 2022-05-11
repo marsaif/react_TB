@@ -31,6 +31,10 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import InputAdornment from '@mui/material/InputAdornment'
 import StarIcon from '@mui/icons-material/Star'
 import isWeekend from 'date-fns/isWeekend'
+import InfiniteScroll from 'react-infinite-scroller';
+
+import './appointment.css'
+
 
 function stringToColor(string) {
     let hash = 0
@@ -131,6 +135,7 @@ const Campaigns = () => {
         })
         console.log(appointmentData.DateAppointment)
     }
+    const [searchTerm, setSearchTerm] = useState('')
 
     const [doctorID, setDoctorID] = useState(null)
 
@@ -195,11 +200,16 @@ const Campaigns = () => {
                 })
         }
     }
+   const [rev,setRev]=useState('')
+const handlerev=(e)=>{
+      setRev(e.target.value)
 
+}
     const updateRating = () => {
         const id = doctorID
 
-        const rating = { value: value }
+        const rating = { value: value, rev : rev }
+
 
         axios
             .put(`http://127.0.0.1:3001/users/rating/${id}`, rating)
@@ -208,6 +218,7 @@ const Campaigns = () => {
                     axios
                         .get('http://127.0.0.1:3001/users/lstDoctor')
                         .then((res) => {
+                            setRev('')
                             setDoctors(res.data.data)
 
                             setReviewNum(res.data.revArr)
@@ -240,7 +251,10 @@ const Campaigns = () => {
                 label="Search"
                 variant="outlined"
                 sx={{ m: 3 }}
-                placeholder="Search for symptoms"
+                placeholder="Search by name | speciality"
+                onChange={(e) => {
+                    setSearchTerm(e.target.value)
+                }}
                 style={{ width: '50%', marginLeft: '25%' }}
             />
 
@@ -254,7 +268,23 @@ const Campaigns = () => {
                     alignItems="center"
                     rowSpacing={4}
                 >
-                    {doctors.map((doctor) => (
+                    {doctors.filter((doctor) => {
+                        if (searchTerm === '') {
+                        return doctor
+                    } else if (
+                            doctor.firstName
+                        .toLowerCase()
+                        .includes(
+                        searchTerm.toLowerCase()
+                        ) ||
+                            doctor.speciality.toLowerCase().includes(
+                        searchTerm.toLowerCase()
+                        )
+                        ) {
+                        return doctor
+                    }
+                    })
+                        .map((doctor) => (
                         <Grid item xs={8} key={doctor._id}>
                             {/*<Paper elevation={6}>*/}
                             {/*    <h1><strong>Dr </strong>{doctor.firstName}</h1>*/}
@@ -381,15 +411,35 @@ const Campaigns = () => {
                                             >
                                                 {reviewNum
                                                     ? reviewNum[
-                                                          doctors.indexOf(
-                                                              doctor
-                                                          )
-                                                      ]
+                                                        doctors.indexOf(
+                                                            doctor
+                                                        )
+                                                        ]
                                                     : null}{' '}
                                                 reviews
                                             </Typography>
+                                           <Typography  variant="body2" maxHeight={10}>
+                                               {doctor.reviews.length === 0?null:(
+                                               <div className="scrollDiv" style={{height:80,overflowY:'scroll'}}>
+
+                                                   {doctor.reviews.filter(review=>{
+                                                       if(review !== ''){
+                                                           return review
+                                                       }
+                                                   }).map(review=>(
+
+                                                    <h5>{review}</h5>
+                                                   ))}
+
+                                               </div>
+                                               )}
+                                           </Typography>
+
+
                                         </Grid>
+
                                     </Grid>
+
                                 </Grid>
                             </Paper>
                         </Grid>
@@ -470,7 +520,7 @@ const Campaigns = () => {
                                             {
                                                 labels[
                                                     hover !== -1 ? hover : value
-                                                ]
+                                                    ]
                                             }
                                         </Box>
                                     )}
@@ -479,10 +529,14 @@ const Campaigns = () => {
                             <Grid item>
                                 <Typography id="transition-modal-description">
                                     <TextareaAutosize
+                                        maxLength={15}
                                         aria-label="minimum height"
                                         minRows={3}
                                         placeholder="give review"
                                         style={{ width: 150 }}
+                                        onChange={handlerev}
+
+
                                     />
                                     <Button
                                         variant="contained"
