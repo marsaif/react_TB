@@ -112,7 +112,7 @@ export default function AddReclamation() {
 
         e.preventDefault()
         axios
-            .post('https://tbibi.herokuapp.com/reclamations', {
+            .post('http://localhost:3001/reclamations', {
                 data: formData,
             })
 
@@ -125,7 +125,7 @@ export default function AddReclamation() {
                 console.log(error)
             })
         toast('Reclamation added successfully')
-        setDoctor('')
+        
     }
 
     return (

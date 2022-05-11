@@ -54,8 +54,9 @@ export default function PatientsHistoryRecord() {
     const [data, setData] = React.useState(false)
     const [lstusers, setLstusers] = useState([lst])
     const [records, setRecords] = useState([])
+    const [appointments, setAppointments] = useState(null)
 
-    useEffect(() => {
+/*     useEffect(() => {
         axios
             .get('https://tbibi.herokuapp.com/users/lstpatients')
             .then((res) => {
@@ -63,11 +64,18 @@ export default function PatientsHistoryRecord() {
                 lst = res.data
                 setLstusers(res.data)
             })
+    }, []) */
+
+    useEffect(() => {
+        axios.get('https://tbibi.herokuapp.com/appointments').then((res) => {
+            setLstusers(res.data)
+            console.log('appointment data', res.data)
+        })
     }, [])
 
     const handleClickOpen = (data) => {
         axios
-            .get('https://tbibi.herokuapp.com/medicalrecord/' + data._id)
+            .get('https://tbibi.herokuapp.com/medicalrecord/' + data.patient)
             .then((res) => {
                 console.log(res.data)
                 setRecords(res.data)
@@ -84,12 +92,12 @@ export default function PatientsHistoryRecord() {
     }
 
     const handleClickRecord = (data) => {
-        //  console.log(data)
+          console.log(data)
         navigate('/medicalRecordDetails/' + data._id)
     }
     const handleClickNewRecord = (data) => {
         console.log(data)
-        navigate('/medicalrecord/' + data._id)
+        navigate('/medicalrecord/' + data.patient)
     }
     const customColumnStyle = { maxWidth: '500px' }
 
@@ -110,10 +118,9 @@ export default function PatientsHistoryRecord() {
             <Table aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell align="right">firstName</TableCell>
-                        <TableCell align="right">email</TableCell>
-                        <TableCell align="right">phone</TableCell>
-                        <TableCell align="right">adress</TableCell>
+                        <TableCell align="right">First name</TableCell>
+                        <TableCell align="right">Email</TableCell>
+                        <TableCell align="right">Phone</TableCell>
                         <TableCell align="center" style={customColumnStyle}>
                             Medical Record details
                         </TableCell>
@@ -129,11 +136,10 @@ export default function PatientsHistoryRecord() {
                                 },
                             }}
                         >
-                            <TableCell align="right">{row.firstName}</TableCell>
+                            <TableCell align="right">{row.patientName}</TableCell>
 
-                            <TableCell align="right">{row.email}</TableCell>
-                            <TableCell align="right">{row.phone}</TableCell>
-                            <TableCell align="right">{row.adress}</TableCell>
+                            <TableCell align="right">{row.patientEmail}</TableCell>
+                            <TableCell align="right">{row.patientPhone}</TableCell>
                             <TableCell align="center">
                                 <Fab
                                     sx={{ mr: 3 }}
@@ -168,7 +174,7 @@ export default function PatientsHistoryRecord() {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {data.firstName} {'Medical Record History '}
+                    {data.firstName} {'Medical Records History '}
                 </DialogTitle>
                 <DialogContent>
                     <List

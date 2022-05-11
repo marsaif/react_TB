@@ -14,7 +14,7 @@ function Chat() {
     const [userTyping, setUserTyping] = useState(false)
     const [lastConversations, setLastConversations] = useState()
     const [currentUser, setCurrentUser] = useState()
-    const [meUser, setMeUser] = useState()
+    const [meUser, setMeUser] = useState('')
 
     const getUser = async () => {
         const accessToken = localStorage.getItem('accessToken')
@@ -23,6 +23,7 @@ function Chat() {
             'https://tbibi.herokuapp.com/users/getUser'
         )
         setMeUser(response.data.user)
+        console.log(response.data.user)
     }
 
     const saveMessage = (e) => {
@@ -92,8 +93,11 @@ function Chat() {
         getConversation(val)
     }
 
+
+
     return (
         <div className="container">
+
             <link
                 rel="stylesheet"
                 href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
@@ -162,19 +166,36 @@ function Chat() {
                                 >
                                     cached
                                 </i>
-                                <i
-                                    className="material-icons"
-                                    onClick={() =>
-                                        navigate(
-                                            '/video-chat/' +
-                                                currentUser +
-                                                '/' +
-                                                meUser._id
+                                {(() => {
+                                    if (
+                                        meUser.premium === true
+                                    ) {
+                                        return (
+
+                                            <i
+                                                className="material-icons"
+
+                                                onClick={() =>
+                                                    navigate(
+                                                        '/video-chat/' +
+                                                        currentUser +
+                                                        '/' +
+                                                        meUser._id
+                                                    )
+                                                }
+                                            >
+                                                ondemand_video
+                                            </i>
+
+
                                         )
                                     }
-                                >
-                                    ondemand_video
-                                </i>
+
+                                    return null
+                                })()}
+
+
+
                                 <i className="material-icons">message</i>
                                 <i className="material-icons">menu</i>
                             </span>
